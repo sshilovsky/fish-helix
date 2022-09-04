@@ -28,6 +28,7 @@ set passed 0
 set failed 0
 
 function do_test -a test_file
+    # FIXME on `-v` echo "$test_file"
     fish "$root/tests/_run.fish" "$test_file" "$tempdir/fifo" "$tempdir/out"
     if test "$status" = 0
         set passed (math "$passed" + 1)
@@ -37,8 +38,7 @@ function do_test -a test_file
 end
 
 if test (count $argv) = 0
-    find "$root/tests" -type f -name "[^_]*.fish" | begin
-        read -l -d\n filename
+    find "$root/tests" -type f -name "[^_]*.fish" | while read -l -d\n filename
         do_test "$filename"
     end
 else

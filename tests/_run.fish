@@ -11,6 +11,7 @@ truncate --size 0 "$test_out"
 tmux -f /dev/null new-session -d fish -i -C \
     "source $root/_init.fish $test_fifo $test_out; source $test_file"
 
+# TODO may hang up if session dies immediately. maybe use separate tmux socket, and check on it
 read -l subprocess_pid tmux_pane < $test_fifo
 
 source $test_file
@@ -18,7 +19,7 @@ for sequence in $_input
     if test "$sequence" = "Normal"
         # Don't confuse with Alt+ commands
         tmux -f /dev/null send-keys -t "$tmux_pane" Escape
-        sleep 0.1
+        sleep 0.1 # FIXME find out what the value should be, between fish and tmux
     else
         tmux -f /dev/null send-keys -t "$tmux_pane" $sequence
     end
