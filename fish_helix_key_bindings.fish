@@ -124,7 +124,7 @@ function fish_helix_key_bindings --description 'helix-like key bindings for fish
         bind -s --preset -M $mode t $n_begin_selection forward-single-char forward-jump-till
         bind -s --preset -M $mode T $n_begin_selection backward-char backward-jump-till
         # FIXME alt-. doesn't work with t/T
-        bind -s --preset -M $mode \e. $n_begin_selection repeat-jump
+        bind -s --preset -M $mode \e. repeat-jump
 
         bind -s --preset -M $mode -m replace_one r repaint-mode
 
