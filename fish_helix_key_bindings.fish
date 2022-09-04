@@ -180,8 +180,8 @@ function fish_helix_key_bindings --description 'helix-like key bindings for fish
     bind -s --preset -M replace_one -m default \r 'commandline -f delete-char; commandline -i \n; commandline -f backward-char; commandline -f repaint-mode'
     bind -s --preset -M replace_one -m default \e cancel repaint-mode
 
-    bind -s --preset -M default k up-or-search
-    bind -s --preset -M default j down-or-search
+    bind -s --preset -M default k up-or-search begin-selection
+    bind -s --preset -M default j down-or-search begin-selection
     bind -s --preset -M visual k up-line
     bind -s --preset -M visual j down-line
     # FIXME arrows
