@@ -29,7 +29,7 @@ end
 set -g fish_key_bindings fish_helix_key_bindings
 bind --user --erase --all
 for mode in default visual insert
-    # \e\e must correspond to tmux key sequence in tests/_run.fish
-    bind --user -M $mode \e\e validate
+    bind --user -M $mode -k f12 validate
 end
+bind --user -M insert -m default -k f11
 

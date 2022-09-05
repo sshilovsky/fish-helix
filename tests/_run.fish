@@ -17,15 +17,12 @@ read -l subprocess_pid tmux_pane < $test_fifo
 source $test_file
 for sequence in $_input
     if test "$sequence" = "Normal"
-        # Don't confuse with Alt+ commands
-        tmux -f /dev/null send-keys -t "$tmux_pane" Escape
-        sleep 0.1 # FIXME find out what the value should be, between fish and tmux
+        tmux -f /dev/null send-keys -t "$tmux_pane" F11
     else
         tmux -f /dev/null send-keys -t "$tmux_pane" $sequence
     end
 end
-# Escape Escape must correspond to the binding in tests/_init.fish
-tmux -f /dev/null send-keys -t "$tmux_pane" Escape Escape
+tmux -f /dev/null send-keys -t "$tmux_pane" F12
  
 
 # FIXME maybe more reliable wait+kill
