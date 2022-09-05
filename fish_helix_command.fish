@@ -8,17 +8,18 @@ function fish_helix_command
     
     for command in $argv
         set -f count (fish_bind_count -r)
-        set -f n_reset_selection ""
-        if test "$fish_bind_mode" != visual
-            set n_reset_selection "begin-selection"
-        end
+
         switch "$command"
             case move_char_left
                 commandline -C (math max\(0, (commandline -C) - $count\))
-                commandline -f $n_reset_selection
+                commandline -f begin-selection
+            case extend_char_left
+                commandline -C (math max\(0, (commandline -C) - $count\))
             case move_char_right
                 commandline -C (math (commandline -C) + $count)
-                commandline -f $n_reset_selection
+                commandline -f begin-selection
+            case extend_char_right
+                commandline -C (math (commandline -C) + $count)
             
             case '*'
                 echo "[fish-helix]" Unknown command "$command" >&2

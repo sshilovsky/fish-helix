@@ -89,26 +89,31 @@ function fish_helix_key_bindings --description 'helix-like key bindings for fish
         bind -s --preset -M visual -m default $key repaint-mode
     end
 
-    # FIXME count commands
+
+    # Normal/Select mode (a.k.a default/visual)
+    for key in (seq 0 9)
+        for mode in default visual
+            bind -s --preset -M $mode $key "fish_bind_count $key"
+            # FIXME example to bind 0
+            # FIXME backspace to edit count
+        end
+    end
+    for key in h "-k left" \e\[D \eOD
+        bind -s --preset -M default $key "fish_helix_command move_char_left"
+        bind -s --preset -M visual $key "fish_helix_command extend_char_left"
+    end
+    for key in l "-k right" \e\[C \eOC
+        bind -s --preset -M default $key "fish_helix_command move_char_right"
+        bind -s --preset -M visual $key "fish_helix_command extend_char_right"
+    end
 
     # Motion and actions in normal/visual mode
     for mode in default visual
-        for key in (seq 0 9)
-            bind -s --preset -M $mode $key "fish_bind_count $key"
-        end
-        # FIXME example to bind 0
-        # FIXME backspace to edit count
 
         if test $mode = default
             set -f n_begin_selection "begin-selection" # only begin-selection if current mode is Normal
         else
             set -f n_begin_selection ""
-        end
-        for key in h "-k left" \e\[D \eOD
-            bind -s --preset -M $mode $key "fish_helix_command move_char_left"
-        end
-        for key in l "-k right" \e\[C \eOC
-            bind -s --preset -M $mode $key "fish_helix_command move_char_right"
         end
 
         bind -s --preset -M $mode gh beginning-of-line $n_begin_selection
