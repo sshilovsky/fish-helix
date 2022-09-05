@@ -36,5 +36,5 @@ set -l last_line (tail -n1 "$test_out")
 if test "$last_line" != "ok"
     echo "Test $test_file has failed" >&2
     head -n-1 "$test_out" >&2
-    return 1
+    exit 1
 end >&2

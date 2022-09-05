@@ -21,7 +21,7 @@ and begin
 end
 
 if test "$error" = true
-    return 1
+    exit 1
 end
 
 set passed 0
