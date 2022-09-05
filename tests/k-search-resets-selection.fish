@@ -1,6 +1,6 @@
 # Example test
 # Key input:
-set -g _input true Enter Normal kvh
-set -g _broken true
+set _input true Enter Normal kvh
+set _broken true
 # Expected state:
-set -g _selection "e"
+set _selection "e"

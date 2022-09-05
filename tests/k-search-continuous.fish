@@ -1,6 +1,6 @@
 # Example test
 # Key input:
-set -g _input printf Enter echo Ender Normal kk
-set -g _broken true
+set _input printf Enter echo Ender Normal kk
+set _broken true
 # Expected state:
-set -g _buffer "printf"
+set _buffer "printf"

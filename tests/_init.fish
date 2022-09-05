@@ -8,7 +8,7 @@ echo $fish_pid "$TMUX_PANE" > $fifo
 set result ok
 
 function validate_val -a caption value expected
-    if test -n "$expected" -a "$value" != "$expected"
+    if test (count $expected) -gt 0 -a "$value" != "$expected"
         echo "$caption $value ("$expected" expected)" >> "$out"
         set result fail
     else
@@ -17,11 +17,11 @@ function validate_val -a caption value expected
 end
 
 function validate
-    validate_val "Bind mode:        " "$fish_bind_mode" "$_mode"
-    validate_val "Cursor line:      " "$(commandline --line)" "$_line"
-    validate_val "Cursor position:  " "$(commandline --cursor)" "$_cursor"
-    validate_val "Buffer content:   " "$(commandline)" "$_buffer"
-    validate_val "Selection content:" "$(commandline --current-selection)" "$_selection"
+    validate_val "Bind mode:        " "$fish_bind_mode" $_mode
+    validate_val "Cursor line:      " "$(commandline --line)" $_line
+    validate_val "Cursor position:  " "$(commandline --cursor)" $_cursor
+    validate_val "Buffer content:   " "$(commandline)" $_buffer
+    validate_val "Selection content:" "$(commandline --current-selection)" $_selection
     echo $result >> "$out"
     exit
 end
