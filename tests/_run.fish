@@ -9,6 +9,8 @@ set -l test_out "$argv[3]"
 truncate --size 0 "$test_out"
 # TODO path to compiled fish executable
 tmux -f /dev/null new-session -d fish --private -i -C "\
+    source $root/../fish_bind_count.fish; \
+    source $root/../fish_helix_command.fish; \
     source $root/../fish_default_mode_prompt.fish; \
     source $root/../fish_helix_key_bindings.fish; \
     source $root/_init.fish $test_fifo $test_out; \
@@ -16,6 +18,7 @@ tmux -f /dev/null new-session -d fish --private -i -C "\
 "
 
 # TODO may hang up if session dies immediately. maybe use separate tmux socket, and check on it
+# alternatively, tmux new-session -P may tell session id
 read -l subprocess_pid tmux_pane < $test_fifo
 
 source $test_file

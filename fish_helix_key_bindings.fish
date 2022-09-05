@@ -93,17 +93,27 @@ function fish_helix_key_bindings --description 'helix-like key bindings for fish
 
     # Motion and actions in normal/visual mode
     for mode in default visual
+        for key in (seq 0 9)
+            bind -s --preset -M $mode $key "fish_bind_count $key"
+        end
+        # FIXME example to bind 0
+        # FIXME backspace to edit count
+
         if test $mode = default
             set -f n_begin_selection "begin-selection" # only begin-selection if current mode is Normal
         else
             set -f n_begin_selection ""
         end
-        bind -s --preset -M $mode h backward-char $n_begin_selection
-        bind -s --preset -M $mode l forward-char $n_begin_selection
-        # FIXME arrows
+        for key in h "-k left" \e\[D \eOD
+            bind -s --preset -M $mode $key "fish_helix_command move_char_left"
+        end
+        for key in l "-k right" \e\[C \eOC
+            bind -s --preset -M $mode $key "fish_helix_command move_char_right"
+        end
+
         bind -s --preset -M $mode gh beginning-of-line $n_begin_selection
         bind -s --preset -M $mode gl end-of-line $n_begin_selection
-        bind -s --preset -M $mode gg beginning-of-buffer $n_begin_selection
+        bind -s --preset -M $mode gg beginning-of-buffer $n_begin_selection # this can accept count before and between `g`'s
         bind -s --preset -M $mode ge end-of-buffer beginning-of-line $n_begin_selection
         # FIXME home/end
 
