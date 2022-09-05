@@ -31,12 +31,9 @@ jobs:
           sudo apt-add-repository ppa:fish-shell/release-3
           sudo apt-get update
           sudo apt-get install tmux fish
+          fish --version
 
       # Runs a set of commands using the runners shell
       - name: Run tests
-        run: |
-          fish --version
-          mkdir -p ~/.config/fish/functions
-          ln -s *.fish ~/.config/fish/functions
-          ./run-tests
+        run: ./run-tests
           
