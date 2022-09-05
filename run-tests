@@ -1,14 +1,14 @@
 #!/usr/bin/env fish
 
-set root $(dirname (status filename))
-set tempdir (mktemp -d)
+set root "$(dirname "$(status filename)")"
+set tempdir "$(mktemp -d)"
 mkfifo "$tempdir/fifo"
 set -l error false
 
 fish "$root/tests/_run.fish" "$root/tests/_example_test.fish" "$tempdir/fifo" "$tempdir/out" 2>/dev/null
 or begin
     echo "$root/test/_example_test.fish has failed, but it should have succeeded" >&2
-    head -n-1 "$tempdir/out"
+    head -n-1 "$tempdir/out" >&2
     set error true
 end
 
@@ -16,7 +16,7 @@ end
 fish "$root/tests/_run.fish" "$root/tests/_broken_test.fish" "$tempdir/fifo" "$tempdir/out" 2>/dev/null
 and begin
     echo "$root/test/_broken_test.fish has succeeded, but it should have failed" >&2
-    head -n-1 "$tempdir/out"
+    head -n-1 "$tempdir/out" >&2
     set error true
 end
 
@@ -47,5 +47,5 @@ else
     end
 end
 
-echo "$(math "$passed" + "$failed") tests finished. $failed failed."
+echo "$(math "$passed" + "$failed") tests finished. $failed failed." >&2
 test "$failed" = 0
