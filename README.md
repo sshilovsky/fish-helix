@@ -14,7 +14,7 @@ To undo, run `fish_default_key_bindings`.
 
 # Tests
 
-Test require fish >= 3.4
+Tests require fish >= 3.4
 
 1. Install tmux.
 2. Run `run-tests` script
