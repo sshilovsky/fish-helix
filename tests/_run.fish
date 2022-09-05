@@ -1,5 +1,5 @@
 
-set -l root (dirname (status filename))
+set -l root "$(dirname "$(status filename)")"
 
 # TODO error handling
 set -l test_file "$argv[1]"
@@ -32,7 +32,7 @@ fish -c "wait $subprocess_pid" 2>/dev/null
 kill $killer_pid
 
 sync "$test_out" ; sleep 0.1 # can't sync without sleep :(
-set -l last_line (tail -n1 "$test_out")
+set -l last_line "$(tail -n1 "$test_out")"
 if test "$last_line" != "ok"
     echo "Test $test_file has failed" >&2
     head -n-1 "$test_out" >&2

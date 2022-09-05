@@ -18,10 +18,10 @@ end
 
 function validate
     validate_val "Bind mode:        " "$fish_bind_mode" "$_mode"
-    validate_val "Cursor line:      " (commandline --line) "$_line"
-    validate_val "Cursor position:  " (commandline --cursor) "$_cursor"
-    validate_val "Buffer content:   " (commandline) "$_buffer"
-    validate_val "Selection content:" (commandline --current-selection) "$_selection"
+    validate_val "Cursor line:      " "$(commandline --line)" "$_line"
+    validate_val "Cursor position:  " "$(commandline --cursor)" "$_cursor"
+    validate_val "Buffer content:   " "$(commandline)" "$_buffer"
+    validate_val "Selection content:" "$(commandline --current-selection)" "$_selection"
     echo $result >> "$out"
     exit
 end
