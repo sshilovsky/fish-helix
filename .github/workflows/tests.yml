@@ -27,7 +27,10 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Install prerequisites
-        run: sudo apt-get install tmux fish
+        run: |
+          sudo apt-add-repository ppa:fish-shell/release-3
+          sudo apt-get update
+          sudo apt-get install tmux fish
 
       # Runs a set of commands using the runners shell
       - name: Run tests
