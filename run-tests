@@ -1,6 +1,6 @@
 #!/usr/bin/env fish
 
-set root "$(dirname "$(status filename)")"
+set root "$(dirname (status filename))"
 set tempdir "$(mktemp -d)"
 mkfifo "$tempdir/fifo"
 set -l error false
