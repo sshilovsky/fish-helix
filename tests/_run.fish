@@ -40,5 +40,9 @@ set -l last_line "$(tail -n1 "$test_out")"
 if test "$last_line" != "ok"
     echo "Test $test_file has failed" >&2
     head -n-1 "$test_out" >&2
-    exit 1
+    if test -n "$_broken"
+        exit 2
+    else
+        exit 1
+    end
 end >&2

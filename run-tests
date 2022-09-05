@@ -26,12 +26,16 @@ end
 
 set passed 0
 set failed 0
+set broken 0
 
 function do_test -a test_file
     # FIXME on `-v` echo "$test_file"
     fish "$root/tests/_run.fish" "$test_file" "$tempdir/fifo" "$tempdir/out"
-    if test "$status" = 0
+    set -l s "$status"
+    if test "$s" = 0
         set passed (math "$passed" + 1)
+    else if test "$s" = 2
+        set broken (math "$broken" + 1)
     else
         set failed (math "$failed" + 1)
     end
@@ -47,5 +51,5 @@ else
     end
 end
 
-echo "$(math "$passed" + "$failed") tests finished. $failed failed." >&2
+echo "$(math "$passed" + "$broken" + "$failed") tests finished. $failed failed and $broken broken" >&2
 test "$failed" = 0
