@@ -31,5 +31,4 @@ bind --user --erase --all
 for mode in default visual insert
     bind --user -M $mode -k f12 validate
 end
-bind --user -M insert -m default -k f11
-
+bind --user -M insert -m default -k f11 ''
