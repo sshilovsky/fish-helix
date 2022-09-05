@@ -1,7 +1,7 @@
 #!/usr/bin/env fish
 
 set root (dirname (status filename))
-set tempdir "$(mktemp -d)"
+set tempdir (mktemp -d)
 mkfifo "$tempdir/fifo"
 set -l error false
 
