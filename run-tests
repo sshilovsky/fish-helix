@@ -47,5 +47,5 @@ else
     end
 end
 
-echo "$(math "$passed" + "$failed") tests finished. $failed failed." >&2
+echo (math "$passed" + "$failed") "tests finished. $failed failed." >&2
 test "$failed" = 0
