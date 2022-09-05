@@ -1,3 +1,7 @@
+## 2022-09-05
+- Added more *.fish files to copy into config directory
+- Added count modifier for `h`/`l` motions
+
 ## 2022-09-04
 - Fixed `Alt-.` to extend selection in normal mode.
 - Tests subsystem.
