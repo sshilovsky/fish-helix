@@ -1,9 +1,12 @@
 # fish-helix
 helix key bindings for fish
 
-So far only very basic stuff, notably copy-paste works weirdly, and word motions don't match helix behavior.
+WIP. Notable problems:
 
-Probably requires fish >= 3.4.1.
+* word motion (w/b/e) is slow-ish, chance is not gonna be fixed without patching fish itself
+* copy-paste works weirdly. Fortunately, undo/redo is in place.
+
+Requires fish >= 3.4.
 
 # Installation
 
@@ -13,8 +16,6 @@ Probably requires fish >= 3.4.1.
 To undo, run `fish_default_key_bindings`.
 
 # Tests
-
-Tests require fish >= 3.4
 
 1. Install tmux.
 2. Run `run-tests` script

@@ -1,3 +1,6 @@
+## 2022-09-06
+- Fixed `[wbeWBE]` motions.
+
 ## 2022-09-05
 - Added more *.fish files to copy into config directory
 - Added count modifier for `h`/`l` motions
