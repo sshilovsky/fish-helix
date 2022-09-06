@@ -22,9 +22,9 @@ function fish_helix_command
                 commandline -C (math (commandline -C) + $count)
 
             case {move,extend}_next_word_start
-                __fish_helix_next_word_start (string replace -r '_.*' '' $command) $count '[:space:]' '\n' '[:alnum:]_'
+                __fish_helix_next_word_start (string replace -r '_.*' '' $command) $count '[:space:]' '[:alnum:]_'
             case {move,extend}_next_long_word_start
-                __fish_helix_next_word_start (string replace -r '_.*' '' $command) $count '[:space:]' '\n'
+                __fish_helix_next_word_start (string replace -r '_.*' '' $command) $count '[:space:]'
 
             case '*'
                 echo "[fish-helix]" Unknown command $command >&2
@@ -35,6 +35,10 @@ end
 function __fish_helix_char_category -a char
     set -f patterns $argv[2..-1]
     for index in (seq 1 (count $patterns))
+        if test "$char" = \n
+            echo N
+            return
+        end
         if test -z "$(echo "$char" | tr -d "$patterns[$index]")"
             echo $index
             return
@@ -56,7 +60,7 @@ function __fish_helix_next_word_start -a mode count
     # echo (string escape $patterns)
     for i in (seq 1 $count)
         # skip starting newlines
-        while test "$(echo "$buffer" | cut -zc$cursor)" = \n
+        while test "$(echo "$buffer" | cut -zc(math $cursor + 1))" = \n
             set cursor (math $cursor + 1)
         end
 
