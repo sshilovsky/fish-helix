@@ -93,15 +93,15 @@ function __fish_helix_next_word_start -a mode count
             set cursor (math $cursor + 1)
             set first ""
         end
+    end
 
-        if test $mode = move
-            commandline -C (math $begin_selection - 1)
-            commandline -f begin-selection
-            for j in (seq $begin_selection (math $cursor - 1))
-                commandline -f forward-char
-            end
-        else
-            commandline -C (math $cursor - 1)
+    if test $mode = move
+        commandline -C (math $begin_selection - 1)
+        commandline -f begin-selection
+        for j in (seq $begin_selection (math $cursor - 1))
+            commandline -f forward-char
         end
+    else
+        commandline -C (math $cursor - 1)
     end
 end
