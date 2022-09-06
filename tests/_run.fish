@@ -38,7 +38,7 @@ set -l killer_pid $last_pid
 fish -c "wait $subprocess_pid" 2>/dev/null
 kill $killer_pid
 
-sync "$test_out" ; sleep 0.1 # can't sync without sleep :(
+sync "$test_out" ; sleep 0.3 # can't sync without sleep :(
 set -l last_line "$(tail -n1 "$test_out")"
 if test "$last_line" != "ok"
     echo "Test $test_file has failed" >&2
