@@ -6,6 +6,8 @@ function fish_helix_command
         return
     end
 
+    # TODO only single command allowed really yet,
+    #     because `commandline -f` queues actions, while `commandline -C` is immediate
     for command in $argv
         set -f count (fish_bind_count -r)
 
