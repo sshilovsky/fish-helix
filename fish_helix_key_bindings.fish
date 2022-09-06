@@ -1,3 +1,15 @@
+# IMPORTANT!!!
+#
+# When defining your own bindings using fish_helix_commandline, be aware that it can break
+# stuff sometimes.
+#
+# It is safe to define a binding consisting of a lone call to fish_helix_commandline.
+# Calls to other functions and executables are allowed along with it, granted they don't mess
+# with fish's commandline buffer.
+#
+# Mixing multiple fish_helix_commandline and commandline calls in one binding MAY trigger issues.
+# Nothing serious, but don't be surprised. Just test it.
+
 function fish_helix_key_bindings --description 'helix-like key bindings for fish'
     if contains -- -h $argv
         or contains -- --help $argv

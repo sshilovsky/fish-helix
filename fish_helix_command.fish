@@ -1,3 +1,6 @@
+# FIXME this can't be called in sequence in general case,
+# because of unsynchronized `commandline -f` and `commandline -C`
+
 function fish_helix_command
     argparse 'h/help' -- $argv
     or return 1
