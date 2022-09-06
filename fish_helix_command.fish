@@ -21,10 +21,14 @@ function fish_helix_command
             case extend_char_right
                 commandline -C (math (commandline -C) + $count)
 
-            case {move,extend}_next_word_start
-                __fish_helix_next_word_start (string replace -r '_.*' '' $command) $count '[:space:]' '[:alnum:]_'
-            case {move,extend}_next_long_word_start
-                __fish_helix_next_word_start (string replace -r '_.*' '' $command) $count '[:space:]'
+            case {move,extend}_next_{long_,}word_{start,end}
+                if string match -gr _long_ $command
+                    set -f longword
+                else
+                    set -f longword '[:alnum:]_'
+                end
+                __fish_helix_word_motion (string split : (string replace -r '_.*_' : $command)) \
+                    $count '[:space:]' $longword
 
             case '*'
                 echo "[fish-helix]" Unknown command $command >&2
@@ -47,8 +51,8 @@ function __fish_helix_char_category -a char
     echo 0
 end
 
-function __fish_helix_next_word_start -a mode count
-    set -f patterns $argv[3..-1]
+function __fish_helix_word_motion -a mode side count
+    set -f patterns $argv[4..-1]
     set -f buffer "$(commandline)"
     set -f cursor (math (commandline -C) + 1) # convert to `cut` format
     set -f char1
@@ -74,7 +78,12 @@ function __fish_helix_next_word_start -a mode count
             set category1 (__fish_helix_char_category "$char1" $patterns)
             set category2 (__fish_helix_char_category "$char2" $patterns)
 
-            if test $category1 != $category2 -a $category2 != 1
+            if test $side = start
+                set -f my_cat $category2
+            else
+                set -f my_cat $category1
+            end
+            if test $category1 != $category2 -a $my_cat != 1
                 if test -n $first
                     set begin_selection (math $cursor + 1)
                 else
