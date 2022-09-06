@@ -42,11 +42,10 @@ function do_test -a test_file
 end
 
 if test (count $argv) = 0
-    find "$root/tests" -type f -name "[^_]*.fish" | while read -l -d\n filename
-        do_test "$filename"
-    end
-else
-    for filename in $argv
+    set argv "$root/tests"
+end
+for dir in $argv
+    find "$dir" -type f -name "[^_]*.fish" | while read -l -d\n filename
         do_test "$filename"
     end
 end
