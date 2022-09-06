@@ -9,10 +9,10 @@ set result ok
 
 function validate_val -a caption value expected
     if test (count $expected) -gt 0 -a "$value" != "$expected"
-        echo "$caption $value ("$expected" expected)" >> "$out"
+        echo "$caption $(string escape "$value") ($(string escape "$expected") expected)" >> "$out"
         set result fail
     else
-        echo "$caption $value" >> "$out"
+        echo "$caption $(string escape "$value")" >> "$out"
     end
 end
 
