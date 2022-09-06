@@ -90,31 +90,33 @@ function fish_helix_key_bindings --description 'helix-like key bindings for fish
     end
 
 
-    # Normal/Select mode (a.k.a default/visual)
-    for key in (seq 0 9)
-        for mode in default visual
+    # Motion and actions in normal/select mode
+    for mode in default visual
+        if test $mode = default
+            set -f n_begin_selection "begin-selection" # only begin-selection if current mode is Normal
+            set -f ns_move_extend "move"
+        else
+            set -f n_begin_selection
+            set -f ns_move_extend "extend"
+        end
+
+        for key in (seq 0 9)
             bind -s --preset -M $mode $key "fish_bind_count $key"
             # FIXME example to bind 0
             # FIXME backspace to edit count
         end
-    end
-    for key in h "-k left" \e\[D \eOD
-        bind -s --preset -M default $key "fish_helix_command move_char_left"
-        bind -s --preset -M visual $key "fish_helix_command extend_char_left"
-    end
-    for key in l "-k right" \e\[C \eOC
-        bind -s --preset -M default $key "fish_helix_command move_char_right"
-        bind -s --preset -M visual $key "fish_helix_command extend_char_right"
-    end
-
-    # Motion and actions in normal/visual mode
-    for mode in default visual
-
-        if test $mode = default
-            set -f n_begin_selection "begin-selection" # only begin-selection if current mode is Normal
-        else
-            set -f n_begin_selection ""
+        for key in h \e\[D \eOD "-k left"
+            bind -s --preset -M $mode $key "fish_helix_command "$ns_move_extend"_char_left"
         end
+        for key in l \e\[C \eOC "-k right"
+            bind -s --preset -M $mode $key "fish_helix_command "$ns_move_extend"_char_right"
+        end
+        bind -s --preset -M $mode w "fish_helix_command "$ns_move_extend"_next_word_start"
+        bind -s --preset -M $mode b "fish_helix_command "$ns_move_extend"_prev_word_start"
+        bind -s --preset -M $mode e "fish_helix_command "$ns_move_extend"_next_word_end"
+        bind -s --preset -M $mode W "fish_helix_command "$ns_move_extend"_next_long_word_start"
+        bind -s --preset -M $mode B "fish_helix_command "$ns_move_extend"_prev_long_word_start"
+        bind -s --preset -M $mode E "fish_helix_command "$ns_move_extend"_next_long_word_end"
 
         bind -s --preset -M $mode gh beginning-of-line $n_begin_selection
         bind -s --preset -M $mode gl end-of-line $n_begin_selection
@@ -125,14 +127,6 @@ function fish_helix_key_bindings --description 'helix-like key bindings for fish
         bind -s --preset -M $mode u undo begin-selection
         bind -s --preset -M $mode U redo begin-selection
 
-
-        # FIXME fix w/e/b behavior in normal mode (needs cpp implementation)
-        bind -s --preset -M $mode w $n_begin_selection forward-word
-        bind -s --preset -M $mode W $n_begin_selection forward-bigword
-        bind -s --preset -M $mode b backward-char $n_begin_selection backward-word
-        bind -s --preset -M $mode B backward-char $n_begin_selection backward-bigword
-        bind -s --preset -M $mode e forward-single-char $n_begin_selection forward-word backward-char
-        bind -s --preset -M $mode E forward-single-char $n_begin_selection forward-bigword backward-char
 
         bind -s --preset -M $mode f $n_begin_selection forward-jump
         bind -s --preset -M $mode F $n_begin_selection backward-jump
