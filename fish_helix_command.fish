@@ -5,7 +5,7 @@ function fish_helix_command
         echo "Helper function to handle modal key bindings mostly outside of insert mode"
         return
     end
-    
+
     for command in $argv
         set -f count (fish_bind_count -r)
 
@@ -25,7 +25,7 @@ function fish_helix_command
                 __fish_helix_next_word_start (string replace -r '_.*' '' $command) $count '[:space:]' '\n' '[:alnum:]_'
             case {move,extend}_next_long_word_start
                 __fish_helix_next_word_start (string replace -r '_.*' '' $command) $count '[:space:]' '\n'
-            
+
             case '*'
                 echo "[fish-helix]" Unknown command $command >&2
         end
@@ -42,34 +42,62 @@ function __fish_helix_char_category -a char
     end
     echo 0
 end
+
 function __fish_helix_next_word_start -a mode count
     set -f patterns $argv[3..-1]
     set -f buffer "$(commandline)"
+    set -f cursor (math (commandline -C) + 1) # convert to `cut` format
     set -f char1
     set -f char2
     set -f category1
     set -f category2
+    set -f begin_selection
     # echo $mode $count
     # echo (string escape $patterns)
     for i in (seq 1 $count)
-        # test $mode = move; and commandline -f begin-selection
         # skip starting newlines
-        while test "$(string sub -s (math (commandline -C) + 1) -l 1 "$buffer")" = \n
-            commandline -C (math (commandline -C) + 1)
+        while test "$(string sub -s $cursor -l 1 "$buffer")" = \n
+            set cursor (math ($cursor) + 1)
         end
 
-        commandline -C (math (commandline -C) + 1)
+        set begin_selection $cursor
+
+        set -l first yes
+        # echo $(string escape "$buffer")
         while true
-            set -l pair "$(string sub -s (math (commandline -C) + 1) -l 2 "$buffer")"
-            set char1 "$(string sub -l 1 "$pair")"
-            set char2 "$(string sub -s 2 -l 1 "$pair")"
-            test "$char2" = ""; and return
-            set category1 (__fish_helix_char_category "$char1" $patterns)
-            set category2 (__fish_helix_char_category "$char2" $patterns)
-            if test $category1 != $category2 -a $category2 != 1
+            set -l pair "$(echo "$buffer" | cut -zc$cursor,(math $cursor + 1))"
+            # echo "pair: $(string escape "$pair")"
+            set char1 "$(echo "$pair" | cut -zc1)"
+            set char2 "$(echo "$pair" | cut -zc2)"
+            # echo "[$(string escape "$char1|$char2")]"
+            test "$char2" = ""; and begin
+                # echo "EOF"
                 break
             end
-            commandline -C (math (commandline -C) + 1) # TODO replace with call to extend_char_right(count=1)
+
+            set category1 (__fish_helix_char_category "$char1" $patterns)
+            set category2 (__fish_helix_char_category "$char2" $patterns)
+
+            # echo $cursor "["$first"]" $category1 $category2
+            if test -n $first -a $category1 != $category2 -a $category2 != 1
+                # echo "shift"
+                set cursor (math $cursor + 1)
+                set begin_selection $cursor
+                set first ""
+                continue
+            end
+
+            if test -z $first -a $category1 != $category2 -a $category2 != 1
+                break
+            end
+            set cursor (math $cursor + 1)
+            set first ""
+        end
+
+        commandline -C (math $begin_selection - 1)
+        commandline -f begin-selection
+        for j in (seq $begin_selection (math $cursor - 1))
+            commandline -f forward-char
         end
     end
 end
