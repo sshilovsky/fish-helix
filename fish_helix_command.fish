@@ -56,8 +56,6 @@ function __fish_helix_next_word_start -a mode count
     set -f category1
     set -f category2
     set -f begin_selection
-    # echo $mode $count
-    # echo (string escape $patterns)
     for i in (seq 1 $count)
         # skip starting newlines
         while test "$(echo "$buffer" | cut -zc(math $cursor + 1))" = \n
@@ -67,32 +65,21 @@ function __fish_helix_next_word_start -a mode count
         set begin_selection $cursor
 
         set -l first yes
-        # echo $(string escape "$buffer")
         while true
             set -l pair "$(echo "$buffer" | cut -zc$cursor,(math $cursor + 1))"
-            # echo "pair: $(string escape "$pair")"
             set char1 "$(echo "$pair" | cut -zc1)"
             set char2 "$(echo "$pair" | cut -zc2)"
-            # echo "[$(string escape "$char1|$char2")]"
-            test "$char2" = ""; and begin
-                # echo "EOF"
-                break
-            end
+            test "$char2" = ""; and break
 
             set category1 (__fish_helix_char_category "$char1" $patterns)
             set category2 (__fish_helix_char_category "$char2" $patterns)
 
-            # echo $cursor "["$first"]" $category1 $category2
-            if test -n $first -a $category1 != $category2 -a $category2 != 1
-                # echo "shift"
-                set cursor (math $cursor + 1)
-                set begin_selection $cursor
-                set first ""
-                continue
-            end
-
-            if test -z $first -a $category1 != $category2 -a $category2 != 1
-                break
+            if test $category1 != $category2 -a $category2 != 1
+                if test -n $first
+                    set begin_selection (math $cursor + 1)
+                else
+                    break
+                end
             end
             set cursor (math $cursor + 1)
             set first ""
