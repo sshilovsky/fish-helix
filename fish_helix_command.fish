@@ -15,16 +15,12 @@ function fish_helix_command
         set -f count (fish_bind_count -r)
 
         switch $command
-            case move_char_left
+            case {move,extend}_char_left
                 commandline -C (math max\(0, (commandline -C) - $count\))
-                commandline -f begin-selection
-            case extend_char_left
-                commandline -C (math max\(0, (commandline -C) - $count\))
-            case move_char_right
+                __fish_helix_maybe_extend $command
+            case {move,extend}_char_right
                 commandline -C (math (commandline -C) + $count)
-                commandline -f begin-selection
-            case extend_char_right
-                commandline -C (math (commandline -C) + $count)
+                __fish_helix_maybe_extend $command
 
             case {move,extend}_{next,prev}_{long_,}word_{start,end}
                 if string match -gr _long_ $command
@@ -43,6 +39,12 @@ function fish_helix_command
             case '*'
                 echo "[fish-helix]" Unknown command $command >&2
         end
+    end
+end
+
+function __fish_helix_maybe_extend -a piece
+    if not string match -gr extend_ $piece
+        commandline -f begin-selection
     end
 end
 
