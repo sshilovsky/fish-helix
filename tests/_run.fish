@@ -28,13 +28,16 @@ fish -c "wait $subprocess_pid" 2>/dev/null
 kill $killer_pid
 
 sync "$temp_dir/out" ; sleep 0.3 # can't sync without sleep :(
-set -l last_line "$(tail -n1 "$temp_dir/out")"
-if test "$last_line" != "ok"
+
+read -l result < "$temp_dir/status"
+if test "$result" = passed
+    exit 0
+end
+if test -n "$_broken"
+    echo "Test $test_file is broken" >&2
+    exit 2
+else
     echo "Test $test_file has failed" >&2
-    head -n-1 "$temp_dir/out" >&2
-    if test -n "$_broken"
-        exit 2
-    else
-        exit 1
-    end
-end >&2
+    cat "$temp_dir/out" >&2
+    exit 1
+end

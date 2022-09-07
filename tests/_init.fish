@@ -5,12 +5,12 @@
 set temp_dir "$argv[1]"
 set fifo "$argv[1]/fifo"
 echo $fish_pid "$TMUX_PANE" > $fifo
-set result ok
+set result passed
 
 function validate_val -a caption value expected
     if test (count $expected) -gt 0 -a "$value" != "$expected"
         echo "$caption $(string escape "$value") ($(string escape "$expected") expected)" >> "$temp_dir/out"
-        set result fail
+        set result failed
     else
         echo "$caption $(string escape "$value")" >> "$temp_dir/out"
     end
@@ -22,7 +22,10 @@ function validate
     validate_val "Cursor position:  " "$(commandline --cursor)" $_cursor
     validate_val "Buffer content:   " "$(commandline)" $_buffer
     validate_val "Selection content:" "$(commandline --current-selection)" $_selection
-    echo $result >> "$temp_dir/out"
+    if test $result = failed -a -n $_broken
+        set result broken
+    end
+    echo $result >> "$temp_dir/status"
     exit
 end
 
