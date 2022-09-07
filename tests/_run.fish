@@ -4,7 +4,7 @@ set -l temp_dir "$argv[2]"
 set -l root "$(dirname "$(status filename)")"
 set -l tmux tmux -f /dev/null -S "$temp_dir/tmux"
 
-truncate --size 0 "$temp_dir/out"
+mkdir -p "$temp_dir/status"
 # TODO path to compiled fish executable
 $tmux new-session -d fish --private -i -C "\
     source $root/../fish_bind_count.fish; \
@@ -17,27 +17,24 @@ $tmux new-session -d fish --private -i -C "\
 
 # TODO may hang up if session dies immediately. maybe use separate tmux socket, and check on it
 # alternatively, tmux new-session -P may tell session id
-read -l subprocess_pid tmux_pane < $temp_dir/fifo
+read -l subprocess_pid tmux_pane < "$temp_dir"/fifo
 
-source $test_file
-
-# FIXME maybe more reliable wait+kill
-fish -c "sleep 0.5; kill $subprocess_pid --timeout 500 SIGKILL" &
-set -l killer_pid $last_pid
-fish -c "wait $subprocess_pid" 2>/dev/null
-kill $killer_pid
-
-sync "$temp_dir/out" ; sleep 0.3 # can't sync without sleep :(
-
-read -l result < "$temp_dir/status"
-if test "$result" = passed
-    exit 0
+if not inotifywait -t 1 -e create "$temp_dir/status" >/dev/null 2>&1
+    # timeout, probably
 end
-if test -n "$_broken"
+read -l result < "$temp_dir/status/status"
+
+switch "$result"
+case passed
+    exit 0
+case broken
     echo "Test $test_file is broken" >&2
     exit 2
-else
+case failed
     echo "Test $test_file has failed" >&2
     cat "$temp_dir/out" >&2
+    exit 1
+case *
+    echo "Test $test_file hasn't completed" >&2
     exit 1
 end

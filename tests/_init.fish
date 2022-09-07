@@ -25,7 +25,7 @@ function validate
     if test $result = failed -a -n $_broken
         set result broken
     end
-    echo $result >> "$temp_dir/status"
+    echo $result >> "$temp_dir/status/status"
     exit
 end
 
