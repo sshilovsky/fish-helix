@@ -3,8 +3,6 @@
 # TODO error handling
 
 set temp_dir "$argv[1]"
-set fifo "$argv[1]/fifo"
-echo $fish_pid "$TMUX_PANE" > $fifo
 set result passed
 
 function validate_val -a caption value expected

@@ -5,7 +5,6 @@ set -l error false
 
 function do_test -a test_file
     set tempdir "$(mktemp -d)"
-    mkfifo "$tempdir/fifo"
     # FIXME on `-v` echo "$test_file"
     fish "$root/tests/_run.fish" "$test_file" "$tempdir"
 end
