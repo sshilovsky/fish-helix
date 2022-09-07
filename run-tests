@@ -7,7 +7,7 @@ function do_test -a test_file
     set tempdir "$(mktemp -d)"
     mkfifo "$tempdir/fifo"
     # FIXME on `-v` echo "$test_file"
-    fish "$root/tests/_run.fish" "$test_file" "$tempdir/fifo" "$tempdir/out"
+    fish "$root/tests/_run.fish" "$test_file" "$tempdir"
 end
 
 do_test "$root/tests/_example_test.fish" 2>/dev/null

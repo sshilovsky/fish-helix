@@ -2,8 +2,8 @@
 
 # TODO error handling
 
-set fifo "$argv[1]"
-set out "$argv[2]"
+set fifo "$argv[1]/fifo"
+set out "$argv[1]/out"
 echo $fish_pid "$TMUX_PANE" > $fifo
 set result ok
 
