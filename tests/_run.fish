@@ -1,13 +1,12 @@
-
-set -l root "$(dirname "$(status filename)")"
-
 # TODO error handling
 set -l test_file "$argv[1]"
 set -l temp_dir "$argv[2]"
+set -l root "$(dirname "$(status filename)")"
+set -l tmux tmux -f /dev/null -S "$temp_dir/tmux"
 
 truncate --size 0 "$temp_dir/out"
 # TODO path to compiled fish executable
-tmux -f /dev/null new-session -d fish --private -i -C "\
+$tmux new-session -d fish --private -i -C "\
     source $root/../fish_bind_count.fish; \
     source $root/../fish_helix_command.fish; \
     source $root/../fish_default_mode_prompt.fish; \
@@ -23,12 +22,12 @@ read -l subprocess_pid tmux_pane < $temp_dir/fifo
 source $test_file
 for sequence in $_input
     if test "$sequence" = "Normal"
-        tmux -f /dev/null send-keys -t "$tmux_pane" F11
+        $tmux send-keys -t "$tmux_pane" F11
     else
-        tmux -f /dev/null send-keys -t "$tmux_pane" $sequence
+        $tmux send-keys -t "$tmux_pane" $sequence
     end
 end
-tmux -f /dev/null send-keys -t "$tmux_pane" F12
+$tmux send-keys -t "$tmux_pane" F12
  
 
 # FIXME maybe more reliable wait+kill
