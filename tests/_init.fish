@@ -2,18 +2,17 @@
 
 # TODO error handling
 
+set temp_dir "$argv[1]"
 set fifo "$argv[1]/fifo"
-set out "$argv[1]/out"
-set -l tmux tmux -f /dev/null -S "$argv[1]/tmux"
 echo $fish_pid "$TMUX_PANE" > $fifo
 set result ok
 
 function validate_val -a caption value expected
     if test (count $expected) -gt 0 -a "$value" != "$expected"
-        echo "$caption $(string escape "$value") ($(string escape "$expected") expected)" >> "$out"
+        echo "$caption $(string escape "$value") ($(string escape "$expected") expected)" >> "$temp_dir/out"
         set result fail
     else
-        echo "$caption $(string escape "$value")" >> "$out"
+        echo "$caption $(string escape "$value")" >> "$temp_dir/out"
     end
 end
 
@@ -23,7 +22,7 @@ function validate
     validate_val "Cursor position:  " "$(commandline --cursor)" $_cursor
     validate_val "Buffer content:   " "$(commandline)" $_buffer
     validate_val "Selection content:" "$(commandline --current-selection)" $_selection
-    echo $result >> "$out"
+    echo $result >> "$temp_dir/out"
     exit
 end
 
@@ -36,9 +35,9 @@ bind --user -M insert -m default -k f11 ''
 
 for sequence in $_input
     if test "$sequence" = "Normal"
-        $tmux send-keys F11
+        tmux send-keys F11
     else
-        $tmux send-keys $sequence
+        tmux send-keys $sequence
     end
 end
-$tmux send-keys F12
+tmux send-keys F12
