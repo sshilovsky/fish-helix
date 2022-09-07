@@ -130,22 +130,27 @@ function fish_helix_key_bindings --description 'helix-like key bindings for fish
         bind -s --preset -M $mode B "fish_helix_command "$ns_move_extend"_prev_long_word_start"
         bind -s --preset -M $mode E "fish_helix_command "$ns_move_extend"_next_long_word_end"
 
-        bind -s --preset -M $mode gh beginning-of-line $n_begin_selection
-        bind -s --preset -M $mode gl end-of-line $n_begin_selection
+        for key in gh \e\[H \eOH "-k home"
+            bind -s --preset -M $mode $key "fish_helix_command goto_line_start"
+        end
+        for key in gl \e\[F \eOF "-k end"
+            bind -s --preset -M $mode $key "fish_helix_command goto_line_end"
+        end
+        bind -s --preset -M $mode gs "fish_helix_command goto_first_nonwhitespace"
+        
         bind -s --preset -M $mode gg beginning-of-buffer $n_begin_selection # this can accept count before and between `g`'s
         bind -s --preset -M $mode ge end-of-buffer beginning-of-line $n_begin_selection
-        # FIXME home/end
 
-        bind -s --preset -M $mode u undo begin-selection
-        bind -s --preset -M $mode U redo begin-selection
-
-
+        # FIXME counts don't work
         bind -s --preset -M $mode f $n_begin_selection forward-jump
         bind -s --preset -M $mode F $n_begin_selection backward-jump
         bind -s --preset -M $mode t $n_begin_selection forward-single-char forward-jump-till
         bind -s --preset -M $mode T $n_begin_selection backward-char backward-jump-till
         # FIXME alt-. doesn't work with t/T
         bind -s --preset -M $mode \e. repeat-jump
+
+        bind -s --preset -M $mode u undo begin-selection
+        bind -s --preset -M $mode U redo begin-selection
 
         bind -s --preset -M $mode -m replace_one r repaint-mode
 

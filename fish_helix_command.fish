@@ -17,10 +17,10 @@ function fish_helix_command
         switch $command
             case {move,extend}_char_left
                 commandline -C (math max\(0, (commandline -C) - $count\))
-                __fish_helix_maybe_extend $command
+                __fish_helix_extend_by_command $command
             case {move,extend}_char_right
                 commandline -C (math (commandline -C) + $count)
-                __fish_helix_maybe_extend $command
+                __fish_helix_extend_by_command $command
 
             case {move,extend}_{next,prev}_{long_,}word_{start,end}
                 if string match -gr _long_ $command
@@ -36,14 +36,30 @@ function fish_helix_command
                 __fish_helix_word_motion (string split : (string replace -r '_.*_' : $command)) \
                     $dir $count '[:space:]' $longword
 
+            case goto_line_start
+                commandline -f beginning-of-line
+                __fish_helix_extend_by_mode
+            case goto_line_end
+                commandline -f end-of-line
+                __fish_helix_extend_by_mode
+            case goto_first_nonwhitespace
+                commandline -f beginning-of-line forward-bigword backward-bigword
+                __fish_helix_extend_by_mode
+
             case '*'
                 echo "[fish-helix]" Unknown command $command >&2
         end
     end
 end
 
-function __fish_helix_maybe_extend -a piece
+function __fish_helix_extend_by_command -a piece
     if not string match -gr extend_ $piece
+        commandline -f begin-selection
+    end
+end
+
+function __fish_helix_extend_by_mode
+    if test $fish_bind_mode = default
         commandline -f begin-selection
     end
 end
