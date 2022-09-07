@@ -20,15 +20,6 @@ $tmux new-session -d fish --private -i -C "\
 read -l subprocess_pid tmux_pane < $temp_dir/fifo
 
 source $test_file
-for sequence in $_input
-    if test "$sequence" = "Normal"
-        $tmux send-keys -t "$tmux_pane" F11
-    else
-        $tmux send-keys -t "$tmux_pane" $sequence
-    end
-end
-$tmux send-keys -t "$tmux_pane" F12
- 
 
 # FIXME maybe more reliable wait+kill
 fish -c "sleep 0.5; kill $subprocess_pid --timeout 500 SIGKILL" &

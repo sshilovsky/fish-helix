@@ -4,6 +4,7 @@
 
 set fifo "$argv[1]/fifo"
 set out "$argv[1]/out"
+set -l tmux tmux -f /dev/null -S "$argv[1]/tmux"
 echo $fish_pid "$TMUX_PANE" > $fifo
 set result ok
 
@@ -32,3 +33,12 @@ for mode in default visual insert
     bind --user -M $mode -k f12 validate
 end
 bind --user -M insert -m default -k f11 ''
+
+for sequence in $_input
+    if test "$sequence" = "Normal"
+        $tmux send-keys F11
+    else
+        $tmux send-keys $sequence
+    end
+end
+$tmux send-keys F12
