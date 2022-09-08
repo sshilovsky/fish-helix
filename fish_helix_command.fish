@@ -45,7 +45,7 @@ function fish_helix_command
             case goto_first_nonwhitespace
                 commandline -f beginning-of-line forward-bigword backward-bigword
                 __fish_helix_extend_by_mode
-            
+
             case goto_file_start
                 commandline -f beginning-of-buffer
                 # TODO !
@@ -59,10 +59,6 @@ function fish_helix_command
                 __fish_helix_extend_by_mode
 
 
-
-        # bind -s --preset -M $mode gg beginning-of-buffer $n_begin_selection # this can accept count before and between `g`'s
-        # bind -s --preset -M $mode ge end-of-buffer beginning-of-line $n_begin_selection
-        
             case '*'
                 echo "[fish-helix]" Unknown command $command >&2
         end
@@ -112,7 +108,10 @@ function __fish_helix_word_motion -a mode side dir count
     set -f begin_selection
     for i in (seq 1 $count)
         # skip starting newlines
-        while test "$(echo -n "$buffer" | cut -zc(math max\(0, $cursor + $dir\)))" = \n
+        while begin
+            set -l pos (math $cursor + $dir)
+            test $pos -ge 0 && string match -r '^.{'$pos'}'\n "$buffer"
+        end
             set cursor (math $cursor + $dir)
         end
 
@@ -121,8 +120,8 @@ function __fish_helix_word_motion -a mode side dir count
         set -l first yes
         while true
             test $cursor = 0 -a $dir = "-1"; and break
-            set char1 "$(echo -n "$buffer" | sed -z 's/.\{'$cursor'\}\(.\).*/\1/')"
-            set char2 "$(echo -n "$buffer" | sed -z 's/.\{'$(math $cursor + $dir)'\}\(.\).*/\1/')"
+            set char1 "$(echo "$buffer" | sed -z 's/.\{'$cursor'\}\(.\).*/\1/')"
+            set char2 "$(echo "$buffer" | sed -z 's/.\{'(math $cursor + $dir)'\}\(.\).*/\1/')"
             test "$char2" = ""; and break
 
             set category1 (__fish_helix_char_category "$char1" $patterns)
