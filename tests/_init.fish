@@ -3,12 +3,15 @@
 # TODO error handling
 
 set temp_dir "$argv[1]"
-set result passed
+if test (count $_broken) = 0 -o -n "$_broken"
+    touch "$temp_dir/broken"
+end
+set result success
 
 function validate_val -a caption value expected
     if test (count $expected) -gt 0 -a "$value" != "$expected"
         echo "$caption $(string escape "$value") ($(string escape "$expected") expected)" >> "$temp_dir/out"
-        set result failed
+        set result failure
     else
         echo "$caption $(string escape "$value")" >> "$temp_dir/out"
     end
@@ -20,10 +23,8 @@ function validate
     validate_val "Cursor position:  " "$(commandline --cursor)" $_cursor
     validate_val "Buffer content:   " "$(commandline)" $_buffer
     validate_val "Selection content:" "$(commandline --current-selection)" $_selection
-    if test $result = failed -a -n $_broken
-        set result broken
-    end
-    echo $result >> "$temp_dir/status/status"
+
+    echo $result >> "$temp_dir/result/result"
     exit
 end
 

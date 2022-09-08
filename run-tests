@@ -3,19 +3,13 @@
 set root (dirname (status filename))
 set -l error false
 
-function do_test -a test_file
-    set tempdir "$(mktemp -d)"
-    # FIXME on `-v` echo "$test_file"
-    fish "$root/tests/_run.fish" "$test_file" "$tempdir"
-end
-
-do_test "$root/tests/_example_test.fish" 2>/dev/null
+fish "$root/tests/_run.fish" "$root/tests/_example_test.fish" (mktemp -d)
 or begin
     echo "$root/tests/_example_test.fish has failed, but it should have succeeded" >&2
     set error true
 end
 
-do_test "$root/tests/_broken_test.fish" 2>/dev/null
+fish "$root/tests/_run.fish" "$root/tests/_broken_test.fish" (mktemp -d)
 and begin
     echo "$root/tests/_broken_test.fish has succeeded, but it should have failed" >&2
     set error true
@@ -26,6 +20,7 @@ if test "$error" = true
 end
 
 set passed 0
+set fixed 0
 set failed 0
 set broken 0
 
@@ -33,18 +28,29 @@ if test (count $argv) = 0
     set argv "$root/tests"
 end
 for dir in $argv
-    find "$dir" -type f -name "[^_]*.fish" | while read -l -d\n filename
-        do_test "$filename"
-        switch $status
-            case 0
-                set passed (math "$passed" + 1)
-            case 1
-                set failed (math "$failed" + 1)
-            case 2
-                set broken (math "$broken" + 1)
+    find "$dir" -type f -name "[^_]*.fish" | while read -l -d\n test_file
+        # FIXME on `-v` echo "$test_file"
+        set temp_dir "$(mktemp -d)"
+        if fish "$root/tests/_run.fish" "$test_file" "$temp_dir"
+            if test -e "$temp_dir/broken"
+                echo "Test $test_file is fixed." >&2
+                set fixed (math $fixed + 1)
+            else
+                # echo "Test $test_file has succeeded." >&2
+                set passed (math $passed + 1)
+            end
+        else
+            if test -e "$temp_dir/broken"
+                # echo "Test $test_file is broken." >&2
+                set broken (math $broken + 1)
+            else
+                echo "Test $test_file has failed." >&2
+                cat "$temp_dir/out" >&2
+                set failed (math $failed + 1)
+            end
         end
     end
 end
 
-echo "$(math "$passed" + "$broken" + "$failed") tests finished. $failed failed and $broken broken" >&2
-test "$failed" = 0
+echo "$(math "$passed" + "$fixed" + "$broken" + "$failed") tests finished. $failed failed and $broken broken." >&2
+test "$failed" = 0 -a "$fixed" = 0
