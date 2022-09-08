@@ -1,3 +1,7 @@
+## 2022-09-07
+- Added `gs`.
+- `gh` and `gl` now reset count.
+
 ## 2022-09-06
 - Fixed `[wbeWBE]` motions.
 

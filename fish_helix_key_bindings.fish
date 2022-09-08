@@ -137,9 +137,9 @@ function fish_helix_key_bindings --description 'helix-like key bindings for fish
             bind -s --preset -M $mode $key "fish_helix_command goto_line_end"
         end
         bind -s --preset -M $mode gs "fish_helix_command goto_first_nonwhitespace"
-        
-        bind -s --preset -M $mode gg beginning-of-buffer $n_begin_selection # this can accept count before and between `g`'s
-        bind -s --preset -M $mode ge end-of-buffer beginning-of-line $n_begin_selection
+        bind -s --preset -M $mode gg "fish_helix_command goto_file_start"
+        bind -s --preset -M $mode G "fish_helix_command goto_line"
+        bind -s --preset -M $mode ge "fish_helix_command goto_last_line"
 
         # FIXME counts don't work
         bind -s --preset -M $mode f $n_begin_selection forward-jump

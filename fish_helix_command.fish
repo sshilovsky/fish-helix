@@ -26,7 +26,7 @@ function fish_helix_command
                 if string match -gr _long_ $command
                     set -f longword
                 else
-                    set -f longword '[:alnum:]_'
+                    set -f longword '[[:alnum:]_]'
                 end
                 if string match -gr _next_ $command
                     set -f dir "1"
@@ -34,18 +34,35 @@ function fish_helix_command
                     set -f dir "-1"
                 end
                 __fish_helix_word_motion (string split : (string replace -r '_.*_' : $command)) \
-                    $dir $count '[:space:]' $longword
+                    $dir $count '[[:space:]]' $longword
 
             case goto_line_start
                 commandline -f beginning-of-line
                 __fish_helix_extend_by_mode
             case goto_line_end
-                commandline -f end-of-line
+                commandline -f end-of-line backward-char
                 __fish_helix_extend_by_mode
             case goto_first_nonwhitespace
                 commandline -f beginning-of-line forward-bigword backward-bigword
                 __fish_helix_extend_by_mode
+            
+            case goto_file_start
+                commandline -f beginning-of-buffer
+                # TODO !
+                __fish_helix_extend_by_mode
+            case goto_last_line
+                commandline -f beginning-of-buffer
+                __fish_helix_extend_by_mode
+            case goto_line
+                # TODO !
+                commandline -f beginning-of-buffer
+                __fish_helix_extend_by_mode
 
+
+
+        # bind -s --preset -M $mode gg beginning-of-buffer $n_begin_selection # this can accept count before and between `g`'s
+        # bind -s --preset -M $mode ge end-of-buffer beginning-of-line $n_begin_selection
+        
             case '*'
                 echo "[fish-helix]" Unknown command $command >&2
         end
@@ -71,18 +88,23 @@ function __fish_helix_char_category -a char
             echo N
             return
         end
-        if test -z "$(echo "$char" | tr -d "$patterns[$index]")"
+        # echo (string escape "$char") "$patterns[$index]" > /dev/stdout
+        echo "$char" | grep -q "$patterns[$index]"
+        if test $status = 0
+        # if test -z "$(echo "$char" | tr -d "$patterns[$index]")"
+            # echo result=$index > /dev/stdout
             echo $index
             return
         end
     end
     echo 0
+    # echo result=0 > /dev/stdout
 end
 
 function __fish_helix_word_motion -a mode side dir count
     set -f patterns $argv[5..-1]
     set -f buffer "$(commandline)"
-    set -f cursor (math (commandline -C) + 1) # convert to `cut` format
+    set -f cursor (commandline -C)
     set -f char1
     set -f char2
     set -f category1
@@ -90,7 +112,7 @@ function __fish_helix_word_motion -a mode side dir count
     set -f begin_selection
     for i in (seq 1 $count)
         # skip starting newlines
-        while test "$(echo "$buffer" | cut -zc(math max\(0, $cursor + $dir\)))" = \n
+        while test "$(echo -n "$buffer" | cut -zc(math max\(0, $cursor + $dir\)))" = \n
             set cursor (math $cursor + $dir)
         end
 
@@ -98,20 +120,20 @@ function __fish_helix_word_motion -a mode side dir count
 
         set -l first yes
         while true
-            test $cursor = 1 -a $dir = "-1"; and break
-            set -l pair "$(echo "$buffer" | cut -zc$cursor,(math $cursor + $dir))"
-            set char1 "$(echo "$pair" | cut -zc1)"
-            set char2 "$(echo "$pair" | cut -zc2)"
+            test $cursor = 0 -a $dir = "-1"; and break
+            set char1 "$(echo -n "$buffer" | sed -z 's/.\{'$cursor'\}\(.\).*/\1/')"
+            set char2 "$(echo -n "$buffer" | sed -z 's/.\{'$(math $cursor + $dir)'\}\(.\).*/\1/')"
             test "$char2" = ""; and break
 
             set category1 (__fish_helix_char_category "$char1" $patterns)
             set category2 (__fish_helix_char_category "$char2" $patterns)
 
-            if test $side = start
+            if test \( $side = start -a $dir = 1 \) -o \( $side = end -a $dir = -1 \)
                 set -f my_cat $category2
             else
                 set -f my_cat $category1
             end
+            # echo "[$first]" (string escape "$char1$char2") $category1 $category2 $my_cat
             if test $category1 != $category2 -a $my_cat != 1
                 if test -n $first
                     set begin_selection (math $cursor + $dir)
@@ -125,7 +147,8 @@ function __fish_helix_word_motion -a mode side dir count
     end
 
     if test $mode = move
-        commandline -C (math $begin_selection - 1)
+        # echo $begin_selection $cursor
+        commandline -C $begin_selection
         commandline -f begin-selection
 
         for j in (seq $begin_selection (math $cursor - 1))
