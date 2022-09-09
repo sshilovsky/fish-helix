@@ -15,69 +15,69 @@ function fish_helix_command
         set -f count (fish_bind_count -r)
 
         switch $command
-            case {move,extend}_char_left
-                commandline -C (math max\(0, (commandline -C) - $count\))
-                __fish_helix_extend_by_command $command
-            case {move,extend}_char_right
-                commandline -C (math (commandline -C) + $count)
-                __fish_helix_extend_by_command $command
+        case {move,extend}_char_left
+            commandline -C (math max\(0, (commandline -C) - $count\))
+            __fish_helix_extend_by_command $command
+        case {move,extend}_char_right
+            commandline -C (math (commandline -C) + $count)
+            __fish_helix_extend_by_command $command
 
-            case {move,extend}_{next,prev}_{long_,}word_{start,end}
-                if string match -qr _long_ $command
-                    set -f longword
-                else
-                    set -f longword '[[:alnum:]_]'
-                end
-                if string match -qr _next_ $command
-                    set -f dir "1"
-                else
-                    set -f dir "-1"
-                end
-                __fish_helix_word_motion (string split : (string replace -r '_.*_' : $command)) \
-                    $dir $count '[[:space:]]' $longword
+        case {move,extend}_{next,prev}_{long_,}word_{start,end}
+            if string match -qr _long_ $command
+                set -f longword
+            else
+                set -f longword '[[:alnum:]_]'
+            end
+            if string match -qr _next_ $command
+                set -f dir "1"
+            else
+                set -f dir "-1"
+            end
+            __fish_helix_word_motion (string split : (string replace -r '_.*_' : $command)) \
+                $dir $count '[[:space:]]' $longword
 
-            case find_till_char
-                __fish_helix_find_char move $count forward-jump-till forward-char
-            case find_next_char
-                __fish_helix_find_char move $count forward-jump
-            case till_prev_char
-                __fish_helix_find_char move $count backward-jump-till backward-char
-            case find_prev_char
-                __fish_helix_find_char move $count backward-jump
-            case extend_till_char
-                __fish_helix_find_char extend $count forward-jump-till forward-char
-            case extend_next_char
-                __fish_helix_find_char extend $count forward-jump
-            case extend_till_prev_char
-                __fish_helix_find_char extend $count backward-jump-till backward-char
-            case extend_prev_char
-                __fish_helix_find_char extend $count backward-jump
+        case find_till_char
+            __fish_helix_find_char move $count forward-jump-till forward-char
+        case find_next_char
+            __fish_helix_find_char move $count forward-jump
+        case till_prev_char
+            __fish_helix_find_char move $count backward-jump-till backward-char
+        case find_prev_char
+            __fish_helix_find_char move $count backward-jump
+        case extend_till_char
+            __fish_helix_find_char extend $count forward-jump-till forward-char
+        case extend_next_char
+            __fish_helix_find_char extend $count forward-jump
+        case extend_till_prev_char
+            __fish_helix_find_char extend $count backward-jump-till backward-char
+        case extend_prev_char
+            __fish_helix_find_char extend $count backward-jump
 
-            case goto_line_start
-                commandline -f beginning-of-line
-                __fish_helix_extend_by_mode
-            case goto_line_end
-                commandline -f end-of-line backward-char
-                __fish_helix_extend_by_mode
-            case goto_first_nonwhitespace
-                commandline -f beginning-of-line forward-bigword backward-bigword
-                __fish_helix_extend_by_mode
+        case goto_line_start
+            commandline -f beginning-of-line
+            __fish_helix_extend_by_mode
+        case goto_line_end
+            commandline -f end-of-line backward-char
+            __fish_helix_extend_by_mode
+        case goto_first_nonwhitespace
+            commandline -f beginning-of-line forward-bigword backward-bigword
+            __fish_helix_extend_by_mode
 
-            case goto_file_start
-                commandline -f beginning-of-buffer
-                # TODO !
-                __fish_helix_extend_by_mode
-            case goto_last_line
-                commandline -f beginning-of-buffer
-                __fish_helix_extend_by_mode
-            case goto_line
-                # TODO !
-                commandline -f beginning-of-buffer
-                __fish_helix_extend_by_mode
+        case goto_file_start
+            commandline -f beginning-of-buffer
+            # TODO !
+            __fish_helix_extend_by_mode
+        case goto_last_line
+            commandline -f beginning-of-buffer
+            __fish_helix_extend_by_mode
+        case goto_line
+            # TODO !
+            commandline -f beginning-of-buffer
+            __fish_helix_extend_by_mode
 
 
-            case '*'
-                echo "[fish-helix]" Unknown command $command >&2
+        case '*'
+            echo "[fish-helix]" Unknown command $command >&2
         end
     end
 end
