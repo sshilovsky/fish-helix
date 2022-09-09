@@ -116,7 +116,7 @@ end
 
 function __fish_helix_word_motion -a mode side dir count
     set -f patterns $argv[5..-1]
-    set -f buffer "$(commandline)"
+    commandline | sed -z 's/\\n$//' | read -fz buffer
     set -f cursor (commandline -C)
     set -f char1
     set -f char2
