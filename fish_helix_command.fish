@@ -60,7 +60,7 @@ function fish_helix_command
             goto_line_end
             __fish_helix_extend_by_mode
         case goto_first_nonwhitespace
-            commandline -f beginning-of-line forward-bigword backward-bigword
+            goto_first_nonwhitespace
             __fish_helix_extend_by_mode
 
         case goto_file_start
@@ -189,12 +189,13 @@ function __fish_helix_find_char -a mode count fish_cmdline till
 end
 
 function goto_line_end
-    set -f cursor (commandline -C)
-    # check if we are on an empty line first (can ignore if at beginning of buffer)
-    if test $cursor != 0
-        # commandline appends another \n, as intended
-        commandline | sed -z 's/.\{'(math $cursor - 1)'\}\(..\).*/\\1/' | read -zl chars
-        test $chars = \n\n && return
-    end
+    # check if we are on an empty line first
+    commandline | sed -n (commandline -L)'!b;/^$/q;q5' && return
     commandline -f end-of-line backward-char
+end
+
+function goto_first_nonwhitespace
+    # check if we are on whitespace line first
+    commandline | sed -n (commandline -L)'!b;/^\\s*$/q;q5' && return
+    commandline -f beginning-of-line forward-bigword backward-bigword
 end
