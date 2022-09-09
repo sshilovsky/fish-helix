@@ -182,10 +182,8 @@ function __fish_helix_find_char -a mode count fish_cmdline till
     if test $mode = move
         commandline -f begin-selection
     end
-    test -n "$till" && commandline -f $till
-    commandline -f "$fish_cmdline"
+    commandline -f $till $fish_cmdline
     for i in (seq 2 $count)
-        test -n "$till" && commandline -f $till
-        commandline -f repeat-jump
+        commandline -f $till repeat-jump
     end
 end
