@@ -141,11 +141,6 @@ function fish_helix_key_bindings --description 'helix-like key bindings for fish
         bind -s --preset -M $mode G "fish_helix_command goto_line"
         bind -s --preset -M $mode ge "fish_helix_command goto_last_line"
 
-        # FIXME counts don't work
-        bind -s --preset -M $mode f $n_begin_selection forward-jump
-        bind -s --preset -M $mode F $n_begin_selection backward-jump
-        bind -s --preset -M $mode t $n_begin_selection forward-single-char forward-jump-till
-        bind -s --preset -M $mode T $n_begin_selection backward-char backward-jump-till
         # FIXME alt-. doesn't work with t/T
         bind -s --preset -M $mode \e. repeat-jump
 
@@ -211,6 +206,16 @@ function fish_helix_key_bindings --description 'helix-like key bindings for fish
     bind -s --preset -M visual k up-line
     bind -s --preset -M visual j down-line
     # FIXME arrows
+
+    # FIXME counts don't work
+    bind -s --preset -M default t "fish_helix_command find_till_char"
+    bind -s --preset -M default f "fish_helix_command find_next_char"
+    bind -s --preset -M default T "fish_helix_command till_prev_char"
+    bind -s --preset -M default F "fish_helix_command find_prev_char"
+    bind -s --preset -M visual t "fish_helix_command extend_till_char"
+    bind -s --preset -M visual f "fish_helix_command extend_next_char"
+    bind -s --preset -M visual T "fish_helix_command extend_till_prev_char"
+    bind -s --preset -M visual F "fish_helix_command extend_prev_char"
 
     ## FIXME Insert mode keys
 

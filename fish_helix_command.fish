@@ -36,6 +36,23 @@ function fish_helix_command
                 __fish_helix_word_motion (string split : (string replace -r '_.*_' : $command)) \
                     $dir $count '[[:space:]]' $longword
 
+            case find_till_char
+                __fish_helix_find_char move $count forward-jump-till forward-char
+            case find_next_char
+                __fish_helix_find_char move $count forward-jump
+            case till_prev_char
+                __fish_helix_find_char move $count backward-jump-till backward-char
+            case find_prev_char
+                __fish_helix_find_char move $count backward-jump
+            case extend_till_char
+                __fish_helix_find_char extend $count forward-jump-till forward-char
+            case extend_next_char
+                __fish_helix_find_char extend $count forward-jump
+            case extend_till_prev_char
+                __fish_helix_find_char extend $count backward-jump-till backward-char
+            case extend_prev_char
+                __fish_helix_find_char extend $count backward-jump
+
             case goto_line_start
                 commandline -f beginning-of-line
                 __fish_helix_extend_by_mode
@@ -158,5 +175,17 @@ function __fish_helix_word_motion -a mode side dir count
         end
     else
         commandline -C (math $cursor - $dir)
+    end
+end
+
+function __fish_helix_find_char -a mode count fish_cmdline till
+    if test $mode = move
+        commandline -f begin-selection
+    end
+    test -n "$till" && commandline -f $till
+    commandline -f "$fish_cmdline"
+    for i in (seq 2 $count)
+        test -n "$till" && commandline -f $till
+        commandline -f repeat-jump
     end
 end
