@@ -23,12 +23,12 @@ function fish_helix_command
                 __fish_helix_extend_by_command $command
 
             case {move,extend}_{next,prev}_{long_,}word_{start,end}
-                if string match -gr _long_ $command
+                if string match -qr _long_ $command
                     set -f longword
                 else
                     set -f longword '[[:alnum:]_]'
                 end
-                if string match -gr _next_ $command
+                if string match -qr _next_ $command
                     set -f dir "1"
                 else
                     set -f dir "-1"
@@ -83,7 +83,7 @@ function fish_helix_command
 end
 
 function __fish_helix_extend_by_command -a piece
-    if not string match -gr extend_ $piece
+    if not string match -qr extend_ $piece
         commandline -f begin-selection
     end
 end
@@ -127,7 +127,7 @@ function __fish_helix_word_motion -a mode side dir count
         # skip starting newlines
         while begin
             set -l pos (math $cursor + $dir)
-            test $pos -ge 0 && string match -r '^.{'$pos'}'\n "$buffer"
+            test $pos -ge 0 && string match -qr '^.{'$pos'}'\n "$buffer"
         end
             set cursor (math $cursor + $dir)
         end
