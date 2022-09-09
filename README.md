@@ -3,7 +3,7 @@ helix key bindings for fish
 
 WIP. Notable problems:
 
-* word motion (w/b/e) is slow-ish, chance is not gonna be fixed without patching fish itself
+* word motion (w/b/e) is slow-ish.
 * copy-paste works weirdly. Fortunately, undo/redo is in place.
 
 Requires fish >= 3.4.
