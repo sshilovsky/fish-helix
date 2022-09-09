@@ -21,8 +21,10 @@ function validate
     validate_val "Bind mode:        " "$fish_bind_mode" $_mode
     validate_val "Cursor line:      " "$(commandline --line)" $_line
     validate_val "Cursor position:  " "$(commandline --cursor)" $_cursor
-    validate_val "Buffer content:   " "$(commandline)" $_buffer
-    validate_val "Selection content:" "$(commandline --current-selection)" $_selection
+    commandline | sed -z 's/\\n$//' | read -lz buffer
+    validate_val "Buffer content:   " "$buffer" $_buffer
+    commandline --current-selection | sed -z 's/\\n$//' | read -lz selection
+    validate_val "Selection content:" "$selection" $_selection
 
     echo $result >> "$temp_dir/result/result"
     exit
