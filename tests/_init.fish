@@ -36,9 +36,12 @@ end
 bind --user -M insert -m default -k f11 ''
 
 for sequence in $_input
-    if test "$sequence" = "Normal"
+    switch "$sequence"
+    case "Normal"
         tmux send-keys F11
-    else
+    case "Line"
+        tmux send-keys F11 o
+    case '*'
         tmux send-keys $sequence
     end
 end
