@@ -1,3 +1,6 @@
+## 2022-09-09
+- Count for `tfTF` motions
+
 ## 2022-09-08
 - Fixed word motions with unicode characters
 - Fixed test system race condition
