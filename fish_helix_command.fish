@@ -36,22 +36,23 @@ function fish_helix_command
             __fish_helix_word_motion (string split : (string replace -r '_.*_' : $command)) \
                 $dir $count '[[:space:]]' $longword
 
-        case find_till_char
-            __fish_helix_find_char move $count forward-jump-till forward-char
+        case till_next_char
+            __fish_helix_find_char $fish_bind_mode $count forward-jump-till forward-char
         case find_next_char
-            __fish_helix_find_char move $count forward-jump
+            __fish_helix_find_char $fish_bind_mode $count forward-jump
         case till_prev_char
-            __fish_helix_find_char move $count backward-jump-till backward-char
+            __fish_helix_find_char $fish_bind_mode $count backward-jump-till backward-char
         case find_prev_char
-            __fish_helix_find_char move $count backward-jump
-        case extend_till_char
-            __fish_helix_find_char extend $count forward-jump-till forward-char
-        case extend_next_char
-            __fish_helix_find_char extend $count forward-jump
-        case extend_till_prev_char
-            __fish_helix_find_char extend $count backward-jump-till backward-char
-        case extend_prev_char
-            __fish_helix_find_char extend $count backward-jump
+            __fish_helix_find_char $fish_bind_mode $count backward-jump
+
+        case till_next_cr
+            __fish_helix_find_cr $fish_bind_mode $count forward-jump-till forward-char
+        case find_next_cr
+            __fish_helix_find_cr $fish_bind_mode $count forward-jump
+        case till_prev_cr
+            __fish_helix_find_cr $fish_bind_mode $count backward-jump-till backward-char
+        case find_prev_cr
+            __fish_helix_find_cr $fish_bind_mode $count backward-jump
 
         case goto_line_start
             commandline -f beginning-of-line
@@ -179,13 +180,25 @@ function __fish_helix_word_motion -a mode side dir count
 end
 
 function __fish_helix_find_char -a mode count fish_cmdline till
-    if test $mode = move
+    # FIXME don't reset selection if N/A
+    if test $mode = default
         commandline -f begin-selection
     end
     commandline -f $till $fish_cmdline
     for i in (seq 2 $count)
         commandline -f $till repeat-jump
     end
+end
+
+function __fish_helix_find_cr -a mode count fish_cmdline till
+    # FIXME don't reset selection if N/A
+    if test $mode = default
+        commandline -f begin-selection
+    end
+    # commandline -f $till $fish_cmdline
+    # for i in (seq 2 $count)
+    #     commandline -f $till repeat-jump
+    # end
 end
 
 function goto_line_end
