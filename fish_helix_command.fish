@@ -68,7 +68,7 @@ function fish_helix_command
             # TODO !
             __fish_helix_extend_by_mode
         case goto_last_line
-            commandline -f beginning-of-buffer
+            commandline -f end-of-buffer beginning-of-line
             __fish_helix_extend_by_mode
         case goto_line
             # TODO !
