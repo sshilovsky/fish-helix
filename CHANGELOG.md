@@ -1,3 +1,7 @@
+## 2022-09-12
+- Changed command names for `tfTF` motions
+- Fixed word motion over hyphens and in select mode
+
 ## 2022-09-09
 - Count for `tfTF` motions
 
