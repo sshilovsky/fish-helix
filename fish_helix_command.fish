@@ -174,7 +174,7 @@ function __fish_helix_word_motion -a mode side dir count
             commandline -f backward-char
         end
     else
-        commandline -C (math $cursor - $dir)
+        commandline -C $cursor
     end
 end
 
