@@ -98,14 +98,13 @@ end
 function __fish_helix_char_category -a char
     set -f patterns $argv[2..-1]
     for index in (seq 1 (count $patterns))
-        if test "$char" = \n
+        if test _"$char" = _\n
             echo N
             return
         end
-        # echo (string escape "$char") "$patterns[$index]" > /dev/stdout
-        echo "$char" | grep -q "$patterns[$index]"
+        # echo -- (string escape -- "$char") "$patterns[$index]" > /dev/stdout
+        echo -- "$char" | grep -q -- "$patterns[$index]"
         if test $status = 0
-        # if test -z "$(echo "$char" | tr -d "$patterns[$index]")"
             # echo result=$index > /dev/stdout
             echo $index
             return
@@ -128,7 +127,7 @@ function __fish_helix_word_motion -a mode side dir count
         # skip starting newlines
         while begin
             set -l pos (math $cursor + $dir)
-            test $pos -ge 0 && string match -qr '^.{'$pos'}'\n "$buffer"
+            test $pos -ge 0 && string match -qr '^.{'$pos'}'\n -- "$buffer"
         end
             set cursor (math $cursor + $dir)
         end
@@ -138,9 +137,9 @@ function __fish_helix_word_motion -a mode side dir count
         set -l first yes
         while true
             test $cursor = 0 -a $dir = "-1"; and break
-            set char1 "$(echo "$buffer" | sed -z 's/.\{'$cursor'\}\(.\).*/\1/')"
-            set char2 "$(echo "$buffer" | sed -z 's/.\{'(math $cursor + $dir)'\}\(.\).*/\1/')"
-            test "$char2" = ""; and break
+            set char1 "$(echo -- "$buffer" | sed -z 's/.\{'$cursor'\}\(.\).*/\1/')"
+            set char2 "$(echo -- "$buffer" | sed -z 's/.\{'(math $cursor + $dir)'\}\(.\).*/\1/')"
+            test _"$char2" = _; and break
 
             set category1 (__fish_helix_char_category "$char1" $patterns)
             set category2 (__fish_helix_char_category "$char2" $patterns)
@@ -150,7 +149,7 @@ function __fish_helix_word_motion -a mode side dir count
             else
                 set -f my_cat $category1
             end
-            # echo "[$first]" (string escape "$char1$char2") $category1 $category2 $my_cat
+            # echo "[$first]" (string escape -- "$char1$char2") $category1 $category2 $my_cat
             if test $category1 != $category2 -a $my_cat != 1
                 if test -n $first
                     set begin_selection (math $cursor + $dir)

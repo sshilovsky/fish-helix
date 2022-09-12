@@ -9,11 +9,11 @@ end
 set result success
 
 function validate_val -a caption value expected
-    if test (count $expected) -gt 0 -a "$value" != "$expected"
-        echo "$caption $(string escape "$value") ($(string escape "$expected") expected)" >> "$temp_dir/out"
+    if test (count $expected) -gt 0 -a _"$value" != _"$expected"
+        echo "$caption $(string escape -- "$value") ($(string escape -- "$expected") expected)" >> "$temp_dir/out"
         set result failure
     else
-        echo "$caption $(string escape "$value")" >> "$temp_dir/out"
+        echo "$caption $(string escape -- "$value")" >> "$temp_dir/out"
     end
 end
 
@@ -44,7 +44,7 @@ for sequence in $_input
     case "Line"
         tmux send-keys F11 o
     case '*'
-        tmux send-keys $sequence
+        tmux send-keys -- "$sequence"
     end
 end
 tmux send-keys F12
