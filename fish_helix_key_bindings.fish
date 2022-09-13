@@ -135,10 +135,12 @@ function fish_helix_key_bindings --description 'helix-like key bindings for fish
         bind -s --preset -M $mode T "fish_helix_command till_prev_char"
         bind -s --preset -M $mode F "fish_helix_command find_prev_char"
 
-        bind -s --preset -M $mode t\r "fish_helix_command till_next_cr"
-        bind -s --preset -M $mode f\r "fish_helix_command find_next_cr"
-        bind -s --preset -M $mode T\r "fish_helix_command till_prev_cr"
-        bind -s --preset -M $mode F\r "fish_helix_command find_prev_cr"
+        for enter in \r \n
+            bind -s --preset -M $mode t$enter "fish_helix_command till_next_cr"
+            bind -s --preset -M $mode f$enter "fish_helix_command find_next_cr"
+            bind -s --preset -M $mode T$enter "fish_helix_command till_prev_cr"
+            bind -s --preset -M $mode F$enter "fish_helix_command find_prev_cr"
+        end
 
         for key in gh \e\[H \eOH "-k home"
             bind -s --preset -M $mode $key "fish_helix_command goto_line_start"
@@ -152,6 +154,7 @@ function fish_helix_key_bindings --description 'helix-like key bindings for fish
         bind -s --preset -M $mode ge "fish_helix_command goto_last_line"
 
         # FIXME alt-. doesn't work with t/T
+        # FIXME alt-. doesn't work with [ftFT][\n\r]
         bind -s --preset -M $mode \e. repeat-jump
 
         bind -s --preset -M $mode u undo begin-selection

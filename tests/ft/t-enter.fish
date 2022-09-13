@@ -1,3 +1,2 @@
-set _input asdfg Normal ghlt\n
-set _broken
+set _input asdfg Normal ghl t\n
 set _selection sdfg
