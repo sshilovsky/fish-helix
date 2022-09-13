@@ -1,3 +1,6 @@
+## 2022-09-13
+- t<cr> and f<cr>
+
 ## 2022-09-12
 - Changed command names for `tfTF` motions
 - Fixed word motion over hyphens and in select mode
