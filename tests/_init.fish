@@ -7,6 +7,7 @@ if test (count $_broken) = 0 -o -n "$_broken"
     touch "$temp_dir/broken"
 end
 set result success
+set tmux tmux -f /dev/null
 
 function validate_val -a caption value expected
     if test (count $expected) -gt 0 -a _"$value" != _"$expected"
@@ -30,21 +31,34 @@ function validate
     exit
 end
 
+function debug
+    validate_val "Bind mode:        " "$fish_bind_mode"
+    validate_val "Cursor line:      " "$(commandline --line)"
+    validate_val "Cursor position:  " "$(commandline --cursor)"
+    commandline | sed -z 's/\\n$//' | read -lz buffer
+    validate_val "Buffer content:   " "$buffer"
+    commandline --current-selection | sed -z 's/\\n$//' | read -lz selection
+    validate_val "Selection content:" "$selection"
+end
+
 set -g fish_key_bindings fish_helix_key_bindings
 bind --user --erase --all
 for mode in default visual insert
     bind --user -M $mode -k f12 validate
+    bind --user -M $mode -k f10 debug
 end
 bind --user -M insert -m default -k f11 ''
 
 for sequence in $_input
     switch "$sequence"
     case "Normal"
-        tmux send-keys F11
+        $tmux send-keys F11
     case "Line"
-        tmux send-keys F11 o
+        $tmux send-keys F11 o
+    case "Debug"
+        $tmux send-keys F10
     case '*'
-        tmux send-keys -- "$sequence"
+        $tmux send-keys -- "$sequence"
     end
 end
-tmux send-keys F12
+$tmux send-keys F12
