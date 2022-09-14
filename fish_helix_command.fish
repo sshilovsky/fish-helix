@@ -46,13 +46,13 @@ function fish_helix_command
             __fish_helix_find_char $fish_bind_mode $count backward-jump
 
         case till_next_cr
-            __fish_helix_find_cr $fish_bind_mode $count 2
+            __fish_helix_find_next_cr $fish_bind_mode $count 2
         case find_next_cr
-            __fish_helix_find_cr $fish_bind_mode $count 1
+            __fish_helix_find_next_cr $fish_bind_mode $count 1
         case till_prev_cr
-            # FIXME
+            __fish_helix_find_prev_cr $fish_bind_mode $count 1
         case find_prev_cr
-            # FIXME
+            __fish_helix_find_prev_cr $fish_bind_mode $count 0
 
         case goto_line_start
             commandline -f beginning-of-line
@@ -189,9 +189,9 @@ function __fish_helix_find_char -a mode count fish_cmdline till
     end
 end
 
-function __fish_helix_find_cr -a mode count skip
+function __fish_helix_find_next_cr -a mode count skip
     set -l cursor (commandline -C)
-    commandline | # Include endling newline
+    commandline | # Include endling newline intentionally
     # Skip until cursor:
     sed -z 's/^.\{'(math $cursor + $skip)'\}\(.*\)$/\\1/' |
     # Count characters up to the target newline:
@@ -203,6 +203,26 @@ function __fish_helix_find_cr -a mode count skip
     end
     for i in (seq 1 (string length -- "$chars"))
         commandline -f forward-char
+    end
+end
+
+function __fish_helix_find_prev_cr -a mode count skip
+    set -l cursor (commandline -C)
+    commandline --cut-at-cursor |
+    sed -z 's/.\{'$skip'\}\n$//' |
+    read -zl buffer
+
+    echo -n $buffer |
+    # Drop characters up to the target newline:
+    sed -z 's/\(\(\\n[^\\n]*\)\{0,'$count'\}\)$//' |
+    read -zl chars
+    set -l n_chars (math (string length -- "$buffer") - (string length -- "$chars"))
+
+    if test $mode = default -a $n_chars != 0
+        commandline -f begin-selection
+    end
+    for i in (seq 1 $n_chars)
+        commandline -f backward-char
     end
 end
 
