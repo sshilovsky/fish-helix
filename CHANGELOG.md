@@ -1,3 +1,9 @@
+## 2022-09-15
+- G and gg with number
+
+## 2022-09-14
+- T<cr> and F<cr>
+
 ## 2022-09-13
 - t<cr> and f<cr>
 

@@ -13,6 +13,7 @@ function fish_helix_command
     #     because `commandline -f` queues actions, while `commandline -C` is immediate
     for command in $argv
         set -f count (fish_bind_count -r)
+        set -f count_defined $status
 
         switch $command
         case {move,extend}_char_left
@@ -65,15 +66,13 @@ function fish_helix_command
             __fish_helix_extend_by_mode
 
         case goto_file_start
-            commandline -f beginning-of-buffer
-            # TODO !
-            __fish_helix_extend_by_mode
+            goto_line $count
+        case goto_line
+            if test "$count_defined" = 0 # if true
+                goto_line $count
+            end
         case goto_last_line
             commandline -f end-of-buffer beginning-of-line
-            __fish_helix_extend_by_mode
-        case goto_line
-            # TODO !
-            commandline -f beginning-of-buffer
             __fish_helix_extend_by_mode
 
 
@@ -236,4 +235,13 @@ function goto_first_nonwhitespace
     # check if we are on whitespace line first
     commandline | sed -n (commandline -L)'!b;/^\\s*$/q;q5' && return
     commandline -f beginning-of-line forward-bigword backward-bigword
+end
+
+function goto_line -a number
+    set -l lines (math min\($number, (commandline | wc -l)\))
+    commandline -f beginning-of-buffer
+    for i in (seq 2 $lines)
+        commandline -f down-line
+    end
+    __fish_helix_extend_by_mode
 end

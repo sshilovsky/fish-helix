@@ -16,10 +16,13 @@ function fish_bind_count
         end
     end
     if test -n "$_flag_read"
-        if test "$fish_bind_count" = 0
-            set -g fish_bind_count 1
-        end
-        echo "$fish_bind_count"
+        set -l count "$fish_bind_count"
         set -g fish_bind_count 0
+        if test "$count" = 0
+            echo 1
+            return 1
+        else
+            echo "$count"
+        end
     end
 end
