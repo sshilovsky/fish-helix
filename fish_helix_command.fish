@@ -23,6 +23,11 @@ function fish_helix_command
             commandline -C (math (commandline -C) + $count)
             __fish_helix_extend_by_command $command
 
+        case char_up
+            char_up $fish_bind_mode $count
+        case char_down
+            char_down $fish_bind_mode $count
+
         case {move,extend}_{next,prev}_{long_,}word_{start,end}
             if string match -qr _long_ $command
                 set -f longword
@@ -241,6 +246,49 @@ function goto_line -a number
     set -l lines (math min\($number, (commandline | wc -l)\))
     commandline -f beginning-of-buffer
     for i in (seq 2 $lines)
+        commandline -f down-line
+    end
+    __fish_helix_extend_by_mode
+end
+
+function char_up -a mode count
+    if commandline --paging-mode && not commandline --search-mode
+        for i in (seq 1 $count)
+            commandline -f up-line
+        end
+        return
+    end
+    set -l line (commandline -L)
+    if commandline --search-mode || test $line = 1
+        for i in (seq 1 (math min \($count, (count $history)\)))
+            commandline -f history-search-backward
+        end
+        return
+    end
+    set -l count (math min\($count, $line-1\))
+    for i in (seq 1 $count)
+        commandline -f up-line
+    end
+    __fish_helix_extend_by_mode
+end
+
+function char_down -a mode count
+    if commandline --paging-mode && not commandline --search-mode
+        for i in (seq 1 $count)
+            commandline -f down-line
+        end
+        return
+    end
+    set -l line (commandline -L)
+    set -l total (count (commandline))
+    if commandline --search-mode || test $line = $total
+        for i in (seq 1 (math min \($count, (count $history)\)))
+            commandline -f history-search-forward
+        end
+        return
+    end
+    set -l count (math min\($count, $total - $line\))
+    for i in (seq 1 $count)
         commandline -f down-line
     end
     __fish_helix_extend_by_mode
