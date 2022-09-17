@@ -142,6 +142,11 @@ function fish_helix_key_bindings --description 'helix-like key bindings for fish
         bind -s --preset -M $mode T "fish_helix_command till_prev_char"
         bind -s --preset -M $mode F "fish_helix_command find_prev_char"
 
+        bind -s --preset -M $mode t\e ""
+        bind -s --preset -M $mode f\e ""
+        bind -s --preset -M $mode T\e ""
+        bind -s --preset -M $mode F\e ""
+
         for enter in \r \n
             bind -s --preset -M $mode t$enter "fish_helix_command till_next_cr"
             bind -s --preset -M $mode f$enter "fish_helix_command find_next_cr"
@@ -164,6 +169,7 @@ function fish_helix_key_bindings --description 'helix-like key bindings for fish
         # FIXME alt-. doesn't work with [ftFT][\n\r]
         bind -s --preset -M $mode \e. repeat-jump
 
+        # FIXME reselect after undo/redo
         bind -s --preset -M $mode u undo begin-selection
         bind -s --preset -M $mode U redo begin-selection
 
