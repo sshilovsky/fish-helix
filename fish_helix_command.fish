@@ -24,9 +24,9 @@ function fish_helix_command
             __fish_helix_extend_by_command $command
 
         case char_up
-            char_up $fish_bind_mode $count
+            __fish_helix_char_up $fish_bind_mode $count
         case char_down
-            char_down $fish_bind_mode $count
+            __fish_helix_char_down $fish_bind_mode $count
 
         case {move,extend}_{next,prev}_{long_,}word_{start,end}
             if string match -qr _long_ $command
@@ -64,17 +64,17 @@ function fish_helix_command
             commandline -f beginning-of-line
             __fish_helix_extend_by_mode
         case goto_line_end
-            goto_line_end
+            __fish_helix_goto_line_end
             __fish_helix_extend_by_mode
         case goto_first_nonwhitespace
-            goto_first_nonwhitespace
+            __fish_helix_goto_first_nonwhitespace
             __fish_helix_extend_by_mode
 
         case goto_file_start
-            goto_line $count
+            __fish_helix_goto_line $count
         case goto_line
             if test "$count_defined" = 0 # if true
-                goto_line $count
+                __fish_helix_goto_line $count
             end
         case goto_last_line
             commandline -f end-of-buffer beginning-of-line
@@ -230,19 +230,19 @@ function __fish_helix_find_prev_cr -a mode count skip
     end
 end
 
-function goto_line_end
+function __fish_helix_goto_line_end
     # check if we are on an empty line first
     commandline | sed -n (commandline -L)'!b;/^$/q;q5' && return
     commandline -f end-of-line backward-char
 end
 
-function goto_first_nonwhitespace
+function __fish_helix_goto_first_nonwhitespace
     # check if we are on whitespace line first
     commandline | sed -n (commandline -L)'!b;/^\\s*$/q;q5' && return
     commandline -f beginning-of-line forward-bigword backward-bigword
 end
 
-function goto_line -a number
+function __fish_helix_goto_line -a number
     set -l lines (math min\($number, (commandline | wc -l)\))
     commandline -f beginning-of-buffer
     for i in (seq 2 $lines)
@@ -251,7 +251,7 @@ function goto_line -a number
     __fish_helix_extend_by_mode
 end
 
-function char_up -a mode count
+function __fish_helix_char_up -a mode count
     if commandline --paging-mode && not commandline --search-mode
         for i in (seq 1 $count)
             commandline -f up-line
@@ -272,7 +272,7 @@ function char_up -a mode count
     __fish_helix_extend_by_mode
 end
 
-function char_down -a mode count
+function __fish_helix_char_down -a mode count
     if commandline --paging-mode && not commandline --search-mode
         for i in (seq 1 $count)
             commandline -f down-line
