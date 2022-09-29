@@ -101,11 +101,11 @@ end
 
 function __fish_helix_char_category -a char
     set -f patterns $argv[2..-1]
+    if test _"$char" = _\n
+        echo N
+        return
+    end
     for index in (seq 1 (count $patterns))
-        if test _"$char" = _\n
-            echo N
-            return
-        end
         # echo -- (string escape -- "$char") "$patterns[$index]" > /dev/stdout
         echo -- "$char" | grep -q -- "$patterns[$index]"
         if test $status = 0
