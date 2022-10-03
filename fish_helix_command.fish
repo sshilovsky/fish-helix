@@ -28,6 +28,17 @@ function fish_helix_command
         case char_down
             __fish_helix_char_down $fish_bind_mode $count
 
+        case move_next_word_start
+            # https://regex101.com/r/KXrl1x/1
+            set -l regex (string join '' \
+            '(?:.?\\n+|' \
+            '[[:alnum:]_](?=[^[:alnum:]_\\s])|' \
+            '[^[:alnum:]_\\s](?=[[:alnum:]_])|' \
+            '[^\S\n](?=[\S\n])|)' \
+            '((?:[[:alnum:]_]+|[^[:alnum:]_\\s]+|)[^\\S\\n]*)' \
+            )
+            __fish_helix_next_word $fish_bind_mode $count $regex
+
         case {move,extend}_{next,prev}_{long_,}word_{start,end}
             if string match -qr _long_ $command
                 set -f longword
@@ -292,4 +303,24 @@ function __fish_helix_char_down -a mode count
         commandline -f down-line
     end
     __fish_helix_extend_by_mode
+end
+
+function __fish_helix_next_word -a mode count regex
+    set -f cursor (commandline -C)
+    commandline |
+    perl -e '
+        use open qw(:std :utf8);
+        do { local $/; substr <>, '$cursor' } =~ m/(?:'$regex'){,'$count'}/u;
+        print $-[1], " ", $+[1];' |
+    read -f left right
+    test "$left" = "$right" && return
+    if test $mode = default
+        commandline -C (math $cursor + $left)
+        commandline -f begin-selection
+        for i in (seq $left (math $right - 2))
+            commandline -f forward-char
+        end
+    else
+        commandline -C (math $cursor + $right)
+    end
 end
