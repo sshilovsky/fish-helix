@@ -43,8 +43,23 @@ function fish_helix_command
             set -l regex (string join '' \
             '(?:.?\\n+|' \
             '[^\\S\\n](?=[\\S\\n])|)' \
-            '((?:\\S+|)[^\\S\\n]*)' \
+            '(\\S*[^\\S\\n]*)' \
             )
+            __fish_helix_next_word $fish_bind_mode $count $regex
+
+        case next_word_end
+            # https://regex101.com/r/Gl0KP2/1
+            set -l regex ' (?:
+                .?\n+ |
+                [[:alnum:]_](?=[^[:alnum:]_]) |
+                [^[:alnum:]_\s](?=[[:alnum:]_\s]) | )
+            ( [^\S\n]*
+                (?: [[:alnum:]_]+ | [^[:alnum:]_\s]+ | ) ) '
+            __fish_helix_next_word $fish_bind_mode $count $regex
+
+        case next_long_word_end
+            set -l regex ' (?: .?\\n+ | \\S(?=\\s) | )
+            ( [^\S\n]* \\S* ) '
             __fish_helix_next_word $fish_bind_mode $count $regex
 
         case {move,extend}_{next,prev}_{long_,}word_{start,end}
@@ -318,7 +333,7 @@ function __fish_helix_next_word -a mode count regex
     commandline |
     perl -e '
         use open qw(:std :utf8);
-        do { local $/; substr <>, '$cursor' } =~ m/(?:'$regex'){,'$count'}/u;
+        do { local $/; substr <>, '$cursor' } =~ m/(?:'$regex'){,'$count'}/ux;
         print $-[1], " ", $+[1];' |
     read -f left right
     test "$left" = "$right" && return
