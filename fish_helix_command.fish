@@ -50,31 +50,34 @@ function fish_helix_command
         case next_word_end
             # https://regex101.com/r/Gl0KP2/1
             set -l regex ' (?:
-                .?\n+ |
+                .?\\n+ |
                 [[:alnum:]_](?=[^[:alnum:]_]) |
-                [^[:alnum:]_\s](?=[[:alnum:]_\s]) | )
-            ( [^\S\n]*
-                (?: [[:alnum:]_]+ | [^[:alnum:]_\s]+ | ) ) '
+                [^[:alnum:]_\\s](?=[[:alnum:]_\\s]) | )
+            ( [^\\S\\n]*
+                (?: [[:alnum:]_]+ | [^[:alnum:]_\\s]+ | ) ) '
             __fish_helix_next_word $fish_bind_mode $count $regex
 
         case next_long_word_end
             set -l regex ' (?: .?\\n+ | \\S(?=\\s) | )
-            ( [^\S\n]* \\S* ) '
+            ( [^\\S\\n]* \\S* ) '
             __fish_helix_next_word $fish_bind_mode $count $regex
 
-        case {move,extend}_{next,prev}_{long_,}word_{start,end}
-            if string match -qr _long_ $command
-                set -f longword
-            else
-                set -f longword '[[:alnum:]_]'
-            end
-            if string match -qr _next_ $command
-                set -f dir "1"
-            else
-                set -f dir "-1"
-            end
-            __fish_helix_word_motion (string split : (string replace -r '_.*_' : $command)) \
-                $dir $count '[[:space:]]' $longword
+        case prev_word_start
+            set -l regex ' ( (?:
+                [[:alnum:]_]+ |
+                [^[:alnum:]_\\s]+ | )
+            [^\\S\\n]* )
+            (?: \\n+.? |
+                (?<=[^[:alnum:]_])[[:alnum:]_] |
+                (?<=[[:alnum:]_\\s])[^[:alnum:]_\\s] | ) '
+            __fish_helix_prev_word $fish_bind_mode $count $regex
+
+        case prev_long_word_start
+            set -l regex '
+            ( \\S* [^\\S\\n]* )
+            (?: \\n+.? | (?<=\\s)\\S | ) '
+            __fish_helix_prev_word $fish_bind_mode $count $regex
+
 
         case till_next_char
             __fish_helix_find_char $fish_bind_mode $count forward-jump-till forward-char
@@ -345,5 +348,32 @@ function __fish_helix_next_word -a mode count regex
         end
     else
         commandline -C (math $cursor + $right - 1)
+    end
+end
+
+function __fish_helix_prev_word -a mode count regex
+    set -f left (math (commandline -C) + 1)
+    set -f updated 0
+    for i in (seq 1 $count)
+        commandline |
+        perl -e '
+            use open qw(:std :utf8);
+            do { local $/; substr <>, 0, '$left' } =~ /(?:'$regex')$/ux;
+            print $-[1], " ", $+[1];' |
+        read -l l r
+        test "$l" = "$r" -o "$l" = 0 -a "$r" = 1 && break
+        set -f left $l
+        set -f right $r
+        set -f updated 1
+    end
+    test $updated -eq 0; and return
+    if test $mode = default
+        commandline -C (math $right - 1)
+        commandline -f begin-selection
+        for i in (seq $left (math $right - 2))
+            commandline -f backward-char
+        end
+    else
+        commandline -C (math $left)
     end
 end

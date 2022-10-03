@@ -1,4 +1,4 @@
 # Key input:
-set _input "abc def" Normal b
+set _input "abc defgh" Normal b
 # Expected state:
-set _selection "def"
+set _selection "defgh"

@@ -131,10 +131,10 @@ function fish_helix_key_bindings --description 'helix-like key bindings for fish
         end
 
         bind -s --preset -M $mode w "fish_helix_command next_word_start"
-        bind -s --preset -M $mode b "fish_helix_command "$ns_move_extend"_prev_word_start"
+        bind -s --preset -M $mode b "fish_helix_command prev_word_start"
         bind -s --preset -M $mode e "fish_helix_command next_word_end"
         bind -s --preset -M $mode W "fish_helix_command next_long_word_start"
-        bind -s --preset -M $mode B "fish_helix_command "$ns_move_extend"_prev_long_word_start"
+        bind -s --preset -M $mode B "fish_helix_command prev_long_word_start"
         bind -s --preset -M $mode E "fish_helix_command next_long_word_end"
 
         bind -s --preset -M $mode t "fish_helix_command till_next_char"
