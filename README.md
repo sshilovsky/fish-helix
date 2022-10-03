@@ -10,13 +10,14 @@ need [fish PR #9215](https://github.com/fish-shell/fish-shell/pull/9215).
 
 # Installation
 
-1. Dependencies: fish >= 3.4, Linux¹, GNU¹, perl.
-2. Copy `*.fish` files inside `~/.config/fish/functions`.
-3. Run `fish_helix_key_bindings`.
+Dependencies: fish >= 3.4, GNU tools¹, perl.
+
+1. Copy `*.fish` files inside `~/.config/fish/functions`.
+2. Run `fish_helix_key_bindings`.
 
 To undo, run `fish_default_key_bindings`.
 
-¹ Should work on other systems, but untested. Report any issues.
+¹ Should work with POSIX, but untested. Report any issues.
 
 # Tests
 
