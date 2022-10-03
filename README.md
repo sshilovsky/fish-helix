@@ -3,17 +3,20 @@ helix key bindings for fish
 
 WIP. Notable problems:
 
-* word motion (w/b/e) is slow-ish.
 * copy-paste works weirdly. Fortunately, undo/redo is in place.
+* a & i don't do not respect current selection. This and many other features
+need [fish PR #9215](https://github.com/fish-shell/fish-shell/pull/9215).
 
-Requires fish >= 3.4.
 
 # Installation
 
-1. Copy `*.fish` files inside `~/.config/fish/functions`
-2. Run `fish_helix_key_bindings`
+1. Dependencies: fish >= 3.4, Linux¹, GNU¹, perl.
+2. Copy `*.fish` files inside `~/.config/fish/functions`.
+3. Run `fish_helix_key_bindings`.
 
 To undo, run `fish_default_key_bindings`.
+
+¹ Should work on other systems, but untested. Report any issues.
 
 # Tests
 
