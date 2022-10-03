@@ -28,7 +28,7 @@ function fish_helix_command
         case char_down
             __fish_helix_char_down $fish_bind_mode $count
 
-        case move_next_word_start
+        case next_word_start
             # https://regex101.com/r/KXrl1x/1
             set -l regex (string join '' \
             '(?:.?\\n+|' \
@@ -39,7 +39,7 @@ function fish_helix_command
             )
             __fish_helix_next_word $fish_bind_mode $count $regex
 
-        case move_next_long_word_start
+        case next_long_word_start
             set -l regex (string join '' \
             '(?:.?\\n+|' \
             '[^\\S\\n](?=[\\S\\n])|)' \
@@ -329,6 +329,6 @@ function __fish_helix_next_word -a mode count regex
             commandline -f forward-char
         end
     else
-        commandline -C (math $cursor + $right)
+        commandline -C (math $cursor + $right - 1)
     end
 end
