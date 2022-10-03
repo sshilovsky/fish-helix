@@ -1,3 +1,3 @@
-set _input 1234 Normal gh f3 f3
+set _input 1234 Normal gh 2f3
 set _broken
-set _selection 123
+set _selection 1
