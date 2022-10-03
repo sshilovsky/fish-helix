@@ -1,3 +1,8 @@
+## 2022-10-04
+- Changed command names for `wWbBeE` motions
+- Fixed wWbBeE motions behaviour and speed
+- Now depend on perl
+
 ## 2022-09-16
 - Added count to kj
 - Fixed kj selection in normal mode
