@@ -34,8 +34,16 @@ function fish_helix_command
             '(?:.?\\n+|' \
             '[[:alnum:]_](?=[^[:alnum:]_\\s])|' \
             '[^[:alnum:]_\\s](?=[[:alnum:]_])|' \
-            '[^\S\n](?=[\S\n])|)' \
+            '[^\\S\\n](?=[\\S\\n])|)' \
             '((?:[[:alnum:]_]+|[^[:alnum:]_\\s]+|)[^\\S\\n]*)' \
+            )
+            __fish_helix_next_word $fish_bind_mode $count $regex
+
+        case move_next_long_word_start
+            set -l regex (string join '' \
+            '(?:.?\\n+|' \
+            '[^\\S\\n](?=[\\S\\n])|)' \
+            '((?:\\S+|)[^\\S\\n]*)' \
             )
             __fish_helix_next_word $fish_bind_mode $count $regex
 
