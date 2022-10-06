@@ -15,7 +15,7 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  fish-3.4.0:
+  fish-3_4_0:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
