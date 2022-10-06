@@ -253,7 +253,7 @@ function __fish_helix_next_word -a mode count regex
     commandline |
     perl -e '
         use open qw(:std :utf8);
-        do { local $/; substr <>, '$cursor' } =~ m/(?:'$regex'){,'$count'}/ux;
+        do { local $/; substr <>, '$cursor' } =~ m/(?:'$regex'){0,'$count'}/ux;
         print $-[1], " ", $+[1];' |
     read -f left right
     test "$left" = "$right" && return
