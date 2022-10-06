@@ -50,8 +50,9 @@ jobs:
         sudo pip3 install pexpect
         # Generate a locale that uses a comma as decimal separator.
         sudo locale-gen fr_FR.UTF-8
-        git clone https://github.com/fish-shell/fish-shell.git --depth 1 --single-branch --branch e274ef6c0d1051a6307e138ad34d8bd3f4c1f87a
+        git clone https://github.com/fish-shell/fish-shell.git --single-branch --branch master
         cd fish-shell
+        git checkout e274ef6c0d1051a6307e138ad34d8bd3f4c1f87a
         mkdir build && cd build
         cmake ..
         make
