@@ -15,25 +15,31 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  fish-3.4.0:
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+    - uses: actions/checkout@v3
 
-      # Runs a single command using the runners shell
-      - name: Install prerequisites
-        run: |
-          sudo apt-add-repository ppa:fish-shell/release-3
-          sudo apt-get update
-          sudo apt-get install tmux inotify-tools fish
-          fish --version
+    - name: Install fish  # mostly copied from fish-shell's own actions
+      env:
+        CXXFLAGS: "-Werror=address -Werror=return-type"
+      run: |
+        sudo apt install gettext libncurses5-dev libpcre2-dev python3-pip tmux
+        sudo pip3 install pexpect
+        # Generate a locale that uses a comma as decimal separator.
+        # sudo locale-gen fr_FR.UTF-8
+        git clone https://github.com/fish-shell/fish-shell.git --single-branch --branch 3.4.0 --depth 1
+        cd fish-shell
+        mkdir build && cd build
+        cmake ..
+        make
+        # make test
+        pwd | tee -a "${GITHUB_PATH}"
 
-      # Runs a set of commands using the runners shell
-      - name: Run tests
-        run: ./run-tests
-          
+    - name: Install dependencies
+      run: |
+        sudo apt install tmux inotify-tools perl
+
+    - name: Run tests
+      run: |
+        ./run-tests
