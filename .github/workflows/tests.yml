@@ -59,9 +59,9 @@ jobs:
         # make test
         pwd | tee -a "${GITHUB_PATH}"
 
-    - name: Install test dependencies
+    - name: Install dependencies
       run: |
-        sudo apt install tmux inotify-tools
+        sudo apt install tmux inotify-tools perl
 
     - name: Run tests
       run: |
