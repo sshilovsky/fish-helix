@@ -1,3 +1,7 @@
+## 2022-10-06
+- Fixed aiAI
+- Now requires fish >= 3.6 (see README)
+
 ## 2022-10-04
 - Changed command names for `wWbBeE` motions
 - Fixed wWbBeE motions behaviour and speed
