@@ -49,18 +49,20 @@ jobs:
         sudo apt install gettext libncurses5-dev libpcre2-dev python3-pip tmux
         sudo pip3 install pexpect
         # Generate a locale that uses a comma as decimal separator.
-        sudo locale-gen fr_FR.UTF-8
+        # sudo locale-gen fr_FR.UTF-8
         git clone https://github.com/fish-shell/fish-shell.git --single-branch --branch master
         cd fish-shell
         git checkout e274ef6c0d1051a6307e138ad34d8bd3f4c1f87a
         mkdir build && cd build
         cmake ..
         make
-        make test
+        # make test
+        pwd | tee -a "${GITHUB_PATH}"
 
     - name: Install test dependencies
       run: |
         sudo apt install tmux inotify-tools
 
     - name: Run tests
-      run: ./run-tests
+      run: |
+        ./run-tests
