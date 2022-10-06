@@ -1,11 +1,16 @@
 # fish-helix
 helix key bindings for fish
 
-WIP. Notable problems:
+This is the outdated version for fish < 3.6.
+
+Notable problems:
 
 * copy-paste works weirdly. Fortunately, undo/redo is in place.
-* a & i don't do not respect current selection. This and many other features
-need [fish PR #9215](https://github.com/fish-shell/fish-shell/pull/9215).
+* a & i don't do not respect current selection.
+
+These and many other features
+need [fish PR #9215](https://github.com/fish-shell/fish-shell/pull/9215)
+merged into fish 3.6.
 
 
 # Installation
