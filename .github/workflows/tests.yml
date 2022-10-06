@@ -43,7 +43,8 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Install fish  # mostly copied from fish-shell's own actions
-      env: CXXFLAGS: "-Werror=address -Werror=return-type"
+      env:
+        CXXFLAGS: "-Werror=address -Werror=return-type"
       run: |
         sudo apt install gettext libncurses5-dev libpcre2-dev python3-pip tmux
         sudo pip3 install pexpect
