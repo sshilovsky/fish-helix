@@ -15,6 +15,8 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  # TODO fish-3 instead of fish-commit, as below:
+  
   # This workflow contains a single job called "build"
   # build:
   #   # The type of runner that the job will run on
@@ -37,6 +39,35 @@ jobs:
   #     - name: Run tests
   #       run: ./run-tests
 
+  fish-master:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Install fish  # mostly copied from fish-shell's own actions
+      env:
+        CXXFLAGS: "-Werror=address -Werror=return-type"
+      run: |
+        sudo apt install gettext libncurses5-dev libpcre2-dev python3-pip tmux
+        sudo pip3 install pexpect
+        # Generate a locale that uses a comma as decimal separator.
+        # sudo locale-gen fr_FR.UTF-8
+        git clone https://github.com/fish-shell/fish-shell.git --single-branch --branch master --depth 1
+        cd fish-shell
+        mkdir build && cd build
+        cmake ..
+        make
+        # make test
+        pwd | tee -a "${GITHUB_PATH}"
+
+    - name: Install dependencies
+      run: |
+        sudo apt install tmux inotify-tools perl
+
+    - name: Run tests
+      run: |
+        ./run-tests
+    
   fish-commit:
     runs-on: ubuntu-latest
     steps:
@@ -50,8 +81,9 @@ jobs:
         sudo pip3 install pexpect
         # Generate a locale that uses a comma as decimal separator.
         # sudo locale-gen fr_FR.UTF-8
-        git clone https://github.com/fish-shell/fish-shell.git --single-branch --branch master
+        git clone https://github.com/fish-shell/fish-shell.git --single-branch --branch master --depth 1
         cd fish-shell
+        git fetch origin e274ef6c0d1051a6307e138ad34d8bd3f4c1f87a --depth 1
         git checkout e274ef6c0d1051a6307e138ad34d8bd3f4c1f87a
         mkdir build && cd build
         cmake ..
