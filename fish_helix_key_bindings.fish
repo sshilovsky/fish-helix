@@ -83,11 +83,11 @@ function fish_helix_key_bindings --description 'helix-like key bindings for fish
         bind -s --preset -M $mode -m insert \r end-selection execute
         bind -s --preset -M $mode -m insert o end-selection insert-line-under repaint-mode
         bind -s --preset -M $mode -m insert O end-selection insert-line-over repaint-mode
-        # FIXME handle selection properly for the following commands (at the command, and during editing):
-        bind -s --preset -M $mode -m insert i end-selection repaint-mode
-        bind -s --preset -M $mode -m insert I end-selection beginning-of-line repaint-mode
-        bind -s --preset -M $mode -m insert a end-selection forward-single-char repaint-mode
-        bind -s --preset -M $mode -m insert A end-selection end-of-line repaint-mode
+        # FIXME i/a should keep selection, maybe
+        bind -s --preset -M $mode i "fish_helix_command insert_mode"
+        bind -s --preset -M $mode I "fish_helix_command prepend_to_line"
+        bind -s --preset -M $mode a "fish_helix_command append_mode"
+        bind -s --preset -M $mode A "fish_helix_command append_to_line"
     end
 
     # Switching from insert mode
@@ -282,6 +282,7 @@ function fish_helix_key_bindings --description 'helix-like key bindings for fish
     # After executing once, this will have defined functions listening for the variable.
     # Therefore it needs to be before setting fish_bind_mode.
     fish_vi_cursor
+    set -g fish_cursor_selection_mode inclusive
 
     set fish_bind_mode $init_mode
 

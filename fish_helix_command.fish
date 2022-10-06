@@ -117,6 +117,24 @@ function fish_helix_command
             commandline -f end-of-buffer beginning-of-line
             __fish_helix_extend_by_mode
 
+        case insert_mode
+            commandline -C (commandline -B)
+            set fish_bind_mode insert
+            commandline -f end-selection repaint-mode
+
+        case append_mode
+            commandline -C (commandline -E)
+            set fish_bind_mode insert
+            commandline -f end-selection repaint-mode
+
+        case prepend_to_line
+            __fish_helix_goto_first_nonwhitespace
+            set fish_bind_mode insert
+            commandline -f end-selection repaint-mode
+
+        case append_to_line
+            set fish_bind_mode insert
+            commandline -f end-selection end-of-line repaint-mode
 
         case '*'
             echo "[fish-helix]" Unknown command $command >&2
