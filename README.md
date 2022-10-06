@@ -11,8 +11,13 @@ Dependencies: fish >= 3.6²³, GNU tools¹, perl.
 To undo, run `fish_default_key_bindings`.
 
 ¹ Should work with POSIX, but untested. Report any issues.
-² fish >= 3.4 is sort of good enough. Clone fish-helix [fish3.4](/sshilovsky/fish-helix/tree/fish3.4) branch.
-³ Until 3.6 is released, clone fish-shell [e274ef6c](/fish-shell/fish-shell/tree/e274ef6c0d1051a6307e138ad34d8bd3f4c1f87a) (or [master](/fish-shell/fish-shell/tree/master)).
+
+² fish >= 3.4 is sort of good enough. Clone fish-helix
+[fish3.4](https://github.com/sshilovsky/fish-helix/tree/fish3.4) branch.
+
+³ Until 3.6 is released, clone fish-shell
+[e274ef6c](https://github.com/fish-shell/fish-shell/tree/e274ef6c0d1051a6307e138ad34d8bd3f4c1f87a)
+(or [master](https://github.com/fish-shell/fish-shell/tree/master)).
 
 # Tests
 
