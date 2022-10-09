@@ -149,6 +149,9 @@ function fish_helix_command
         case replace_selection
             __fish_helix_replace_selection
 
+        case select_all
+            commandline -f beginning-of-buffer begin-selection end-of-buffer end-of-line backward-char
+
 
         case '*'
             echo "[fish-helix]" Unknown command $command >&2

@@ -217,7 +217,9 @@ function fish_helix_key_bindings --description 'helix-like key bindings for fish
         bind -s --preset -M $mode \; begin-selection
         bind -s --preset -M $mode \e\; swap-selection-start-stop
         # FIXME \e:
-        # FIXME %
+
+        bind -s --preset -M $mode % "fish_helix_command select_all"
+
         # FIXME x X \ex
         # FIXME J
         # FIXME \cc
