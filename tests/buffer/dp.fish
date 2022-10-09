@@ -1,3 +1,3 @@
-set _input asdfg Normal 3hvld glp
-set _broken
-set _buffer asgdf
+set _input asdfg Normal "Fd;dp"
+set _buffer asfdg
+set _selection f

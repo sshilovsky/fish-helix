@@ -107,9 +107,11 @@ function fish_helix_key_bindings --description 'helix-like key bindings for fish
         if test $mode = default
             set -f n_begin_selection "begin-selection" # only begin-selection if current mode is Normal
             set -f ns_move_extend "move"
+            set -f commandline_v_repaint ""
         else
             set -f n_begin_selection
             set -f ns_move_extend "extend"
+            set -f commandline_v_repaint "commandline -f repaint-mode"
         end
 
         for key in (seq 0 9)
@@ -175,14 +177,25 @@ function fish_helix_key_bindings --description 'helix-like key bindings for fish
 
         bind -s --preset -M $mode -m replace_one r repaint-mode
 
-        # FIXME !
         # FIXME registers
-        # FIXME selection and cursor behavior
-        bind -s --preset -M $mode y fish_clipboard_copy
-        bind -s --preset -M $mode P fish_clipboard_paste
-        bind -s --preset -M $mode p "commandline -f forward-single-char begin-selection ; fish_clipboard_paste"
-        bind -s --preset -M $mode Q yank-pop
-        bind -s --preset -M $mode R kill-selection begin-selection yank-pop yank
+        # bind -s --preset -M $mode y fish_clipboard_copy
+        # bind -s --preset -M $mode P fish_clipboard_paste
+        # bind -s --preset -M $mode R kill-selection begin-selection yank-pop yank
+
+        bind -s --preset -M $mode -m default d "fish_helix_command delete_selection; $commandline_v_repaint"
+        bind -s --preset -M $mode -m default \ed "fish_helix_command delete_selection_noyank; $commandline_v_repaint"
+        bind -s --preset -M $mode -m insert c "fish_helix_command delete_selection; commandline -f end-selection repaint-mode"
+        bind -s --preset -M $mode -m insert \ec "fish_helix_command delete_selection_noyank; commandline -f end-selection repaint-mode"
+
+        bind -s --preset -M $mode -m default y "fish_helix_command yank"
+        bind -s --preset -M $mode p "fish_helix_command paste_after"
+        bind -s --preset -M $mode P "fish_helix_command paste_before"
+        bind -s --preset -M $mode R "fish_helix_command replace_selection"
+
+        bind -s --preset -M $mode -m default " y" "fish_clipboard_copy; $commandline_v_repaint"
+        bind -s --preset -M $mode " p" fish_clipboard_paste # TODO
+        bind -s --preset -M $mode " P" fish_clipboard_paste
+        bind -s --preset -M $mode " R" "" # TODO
 
         # FIXME keep selection
         bind -s --preset -M $mode ~ togglecase-selection
@@ -191,10 +204,6 @@ function fish_helix_key_bindings --description 'helix-like key bindings for fish
         # FIXME .
         # FIXME < and >
         # FIXME =
-
-        bind -s --preset -M $mode -m default d kill-selection begin-selection $v_repaint_mode
-        bind -s --preset -M $mode -m insert c kill-selection end-selection repaint-mode
-        # FIXME \ed \ec
 
         # FIXME \ca \cx
         # FIXME Qq

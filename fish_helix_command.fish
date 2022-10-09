@@ -136,6 +136,20 @@ function fish_helix_command
             set fish_bind_mode insert
             commandline -f end-selection end-of-line repaint-mode
 
+        case delete_selection
+            commandline -f kill-selection begin-selection
+        case delete_selection_noyank
+            __fish_helix_delete_selection
+        case yank
+            __fish_helix_yank
+        case paste_before
+            __fish_helix_paste_before
+        case paste_after
+            __fish_helix_paste_after
+        case replace_selection
+            __fish_helix_replace_selection
+
+
         case '*'
             echo "[fish-helix]" Unknown command $command >&2
         end
@@ -310,5 +324,57 @@ function __fish_helix_prev_word -a mode count regex
         end
     else
         commandline -C (math $left)
+    end
+end
+
+function __fish_helix_delete_selection
+    set start (commandline -B)
+    set end (commandline -E)
+    commandline |
+    sed -zE 's/^(.{'$start'})(.{0,'(math $end - $start)'})(.*)\\n$/\\1\\3/' |
+    read -l result
+
+    commandline "$result"
+    commandline -C $start
+    commandline -f begin-selection
+end
+
+function __fish_helix_yank
+    commandline -f kill-selection yank backward-char
+    # set -l start (commandline -B)
+    # set -l end (commandline -E)
+    # commandline |
+    # sed -zE 's/^(.{'$start'})(.{0,'(math $end - $start)'})(.*)\\n$/\\2/' |
+    # set -p fish_killring
+end
+
+function __fish_helix_paste_before
+    commandline -C (commandline -B)
+    commandline -f yank begin-selection
+end
+
+function __fish_helix_paste_after
+    commandline -C (commandline -E)
+    commandline -f yank
+
+    for i in (seq 0 (string length $fish_killring[1]))
+        commandline -f backward-char
+    end
+    commandline -f begin-selection
+end
+
+function __fish_helix_replace_selection
+    set start (commandline -B)
+    set end (commandline -E)
+    set replacement $fish_killring[1]
+    commandline |
+    sed -zE 's/^(.{'$start'})(.{0,'(math $end - $start)'})(.*)\\n$/\\1'"$(string escape "$replacement")"'\\3/' |
+    read -l result
+
+    commandline "$result"
+    commandline -C $start
+    commandline -f begin-selection
+    for i in (seq 2 (string length $replacement))
+        commandline -f forward-char
     end
 end
