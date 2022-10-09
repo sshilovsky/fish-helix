@@ -1,3 +1,10 @@
+## 2022-10-09
+- Changed d c to use fish killring instead of external buffer (X11 etc)
+- Changed p R to use fish killring instead of external buffer (X11 etc)
+- Added space+y space+P for external buffer (X11 etc)
+- Added alt-d alt-c
+- Added %
+
 ## 2022-10-06
 - Fixed aiAI
 - Now requires fish >= 3.6 (see README)
