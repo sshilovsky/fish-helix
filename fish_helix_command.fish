@@ -371,7 +371,7 @@ function __fish_helix_replace_selection
     set end (commandline -E)
     set replacement $fish_killring[1]
     commandline |
-    sed -zE 's/^(.{'$start'})(.{0,'(math $end - $start)'})(.*)\\n$/\\1'"$(string escape "$replacement")"'\\3/' |
+    sed -zE 's/^(.{'$start'})(.{0,'(math $end - $start)'})(.*)\\n$/\\1'"$(string escape --style=regex "$replacement")"'\\3/' |
     read -l result
 
     commandline "$result"
