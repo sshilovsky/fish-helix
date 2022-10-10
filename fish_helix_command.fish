@@ -140,14 +140,22 @@ function fish_helix_command
             commandline -f kill-selection begin-selection
         case delete_selection_noyank
             __fish_helix_delete_selection
+
         case yank
             __fish_helix_yank
         case paste_before
-            __fish_helix_paste_before
+            __fish_helix_paste_before "commandline -f yank"
         case paste_after
-            __fish_helix_paste_after
+            __fish_helix_paste_after "commandline -f yank"
         case replace_selection
-            __fish_helix_replace_selection
+            __fish_helix_replace_selection "commandline -f yank"
+
+        case paste_before_clip
+            __fish_helix_paste_before "fish_clipboard_paste"
+        case paste_after_clip
+            __fish_helix_paste_after "fish_clipboard_paste"
+        case replace_selection_clip
+            __fish_helix_replace_selection "fish_clipboard_paste"
 
         case select_all
             commandline -f beginning-of-buffer begin-selection end-of-buffer end-of-line backward-char
@@ -351,14 +359,17 @@ function __fish_helix_yank
     # set -p fish_killring
 end
 
-function __fish_helix_paste_before
+function __fish_helix_paste_before -a cmd_paste
+    set -l cmd_paste $(string split " " $cmd_paste)
     commandline -C (commandline -B)
-    commandline -f yank begin-selection
+    $cmd_paste
+    commandline -f begin-selection
 end
 
-function __fish_helix_paste_after
+function __fish_helix_paste_after -a cmd_paste
+    set -l cmd_paste $(string split " " $cmd_paste)
     commandline -C (commandline -E)
-    commandline -f yank
+    $cmd_paste
 
     for i in (seq 0 (string length $fish_killring[1]))
         commandline -f backward-char

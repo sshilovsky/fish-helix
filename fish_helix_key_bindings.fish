@@ -193,9 +193,9 @@ function fish_helix_key_bindings --description 'helix-like key bindings for fish
         bind -s --preset -M $mode R "fish_helix_command replace_selection"
 
         bind -s --preset -M $mode -m default " y" "fish_clipboard_copy; $commandline_v_repaint"
-        bind -s --preset -M $mode " p" fish_clipboard_paste # TODO
-        bind -s --preset -M $mode " P" fish_clipboard_paste
-        bind -s --preset -M $mode " R" "" # TODO
+        bind -s --preset -M $mode " p" "fish_helix_command paste_after_clip"
+        bind -s --preset -M $mode " P" "fish_helix_command paste_before_clip"
+        bind -s --preset -M $mode " R" "fish_helix_command replace_selection_clip"
 
         # FIXME keep selection
         bind -s --preset -M $mode ~ togglecase-selection
