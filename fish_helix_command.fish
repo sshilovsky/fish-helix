@@ -361,20 +361,38 @@ end
 
 function __fish_helix_paste_before -a cmd_paste
     set -l cmd_paste $(string split " " $cmd_paste)
-    commandline -C (commandline -B)
+    set -l cursor (commandline -C)
+    set -l start (commandline -B)
+    set -l end (commandline -E)
+    commandline -C $start
     $cmd_paste
     commandline -f begin-selection
+    for i in (seq $start (math $end - 2))
+        commandline -f forward-char
+    end
+    if test $cursor = $start
+        commandline -f swap-selection-start-stop
+    end
 end
 
 function __fish_helix_paste_after -a cmd_paste
     set -l cmd_paste $(string split " " $cmd_paste)
-    commandline -C (commandline -E)
+    set -l cursor (commandline -C)
+    set -l start (commandline -B)
+    set -l end (commandline -E)
+    commandline -C $end
     $cmd_paste
 
     for i in (seq 0 (string length $fish_killring[1]))
         commandline -f backward-char
     end
     commandline -f begin-selection
+    for i in (seq $start (math $end - 2))
+        commandline -f backward-char
+    end
+    if test $cursor != $start
+        commandline -f swap-selection-start-stop
+    end
 end
 
 function __fish_helix_replace_selection
