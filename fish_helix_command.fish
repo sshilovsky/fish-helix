@@ -351,12 +351,13 @@ function __fish_helix_delete_selection
 end
 
 function __fish_helix_yank
+    set -l end (commandline -E)
+    set -l cursor (commandline -C)
     commandline -f kill-selection yank backward-char
-    # set -l start (commandline -B)
-    # set -l end (commandline -E)
-    # commandline |
-    # sed -zE 's/^(.{'$start'})(.{0,'(math $end - $start)'})(.*)\\n$/\\2/' |
-    # set -p fish_killring
+
+    for i in (seq $cursor (math $end - 2))
+        commandline -f backward-char
+    end
 end
 
 function __fish_helix_paste_before -a cmd_paste
