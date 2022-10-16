@@ -148,14 +148,14 @@ function fish_helix_command
         case paste_after
             __fish_helix_paste_after "commandline -f yank"
         case replace_selection
-            __fish_helix_replace_selection "commandline -f yank"
+            __fish_helix_replace_selection "$fish_killring[1]" "true"
 
         case paste_before_clip
             __fish_helix_paste_before "fish_clipboard_paste"
         case paste_after_clip
             __fish_helix_paste_after "fish_clipboard_paste" --clip
         case replace_selection_clip
-            __fish_helix_replace_selection "fish_clipboard_paste"
+            __fish_helix_replace_selection "" "fish_clipboard_paste" --clip
 
         case select_all
             commandline -f beginning-of-buffer begin-selection end-of-buffer end-of-line backward-char
@@ -400,22 +400,34 @@ function __fish_helix_paste_after -a cmd_paste
     end
 end
 
-function __fish_helix_replace_selection
+function __fish_helix_replace_selection -a replacement cmd_paste
+    set -l cmd_paste $(string split " " $cmd_paste)
     set cursor (commandline -C)
     set start (commandline -B)
     set end (commandline -E)
-    set replacement $fish_killring[1]
     commandline |
     sed -zE 's/^(.{'$start'})(.{0,'(math $end - $start)'})(.*)\\n$/\\1'"$(string escape --style=regex "$replacement")"'\\3/' |
     read -l result
 
     commandline "$result"
     commandline -C $start
-    commandline -f begin-selection
-    for i in (seq 2 (string length $replacement))
-        commandline -f forward-char
-    end
-    if test $cursor = $start
-        commandline -f swap-selection-start-stop
+    $cmd_paste
+
+    if test "$argv[3]" = --clip
+        commandline -f backward-char begin-selection
+        for i in (seq (math $start + 2) (commandline -C))
+            commandline -f backward-char
+        end
+        if test $cursor != $start
+            commandline -f swap-selection-start-stop
+        end
+    else
+        commandline -f begin-selection
+        for i in (seq 2 (string length "$replacement"))
+            commandline -f forward-char
+        end
+        if test $cursor = $start
+            commandline -f swap-selection-start-stop
+        end
     end
 end
