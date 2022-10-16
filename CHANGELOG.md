@@ -1,3 +1,10 @@
+## 2022-10-16
+- Added space+p, space+R
+- Fixed cursor positioning after p, R and y
+
+## 2022-10-10
+- Fixed selection after p, P and R
+
 ## 2022-10-09
 - Changed d c to use fish killring instead of external buffer (X11 etc)
 - Changed p R to use fish killring instead of external buffer (X11 etc)
