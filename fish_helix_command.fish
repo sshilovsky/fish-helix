@@ -400,6 +400,7 @@ function __fish_helix_paste_after -a cmd_paste
 end
 
 function __fish_helix_replace_selection
+    set cursor (commandline -C)
     set start (commandline -B)
     set end (commandline -E)
     set replacement $fish_killring[1]
@@ -412,5 +413,8 @@ function __fish_helix_replace_selection
     commandline -f begin-selection
     for i in (seq 2 (string length $replacement))
         commandline -f forward-char
+    end
+    if test $cursor = $start
+        commandline -f swap-selection-start-stop
     end
 end
