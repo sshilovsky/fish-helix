@@ -387,7 +387,7 @@ function __fish_helix_paste_after -a cmd_paste
     if test "$argv[2]" = "--clip"
         commandline -C (math $end - 1)
     else
-        for i in (seq 0 (string length $fish_killring[1]))
+        for i in (seq 0 (string length "$fish_killring[1]"))
             commandline -f backward-char
         end
     end
