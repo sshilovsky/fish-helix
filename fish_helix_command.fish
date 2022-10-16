@@ -153,7 +153,7 @@ function fish_helix_command
         case paste_before_clip
             __fish_helix_paste_before "fish_clipboard_paste"
         case paste_after_clip
-            __fish_helix_paste_after "fish_clipboard_paste"
+            __fish_helix_paste_after "fish_clipboard_paste" --clip
         case replace_selection_clip
             __fish_helix_replace_selection "fish_clipboard_paste"
 
@@ -383,8 +383,12 @@ function __fish_helix_paste_after -a cmd_paste
     commandline -C $end
     $cmd_paste
 
-    for i in (seq 0 (string length $fish_killring[1]))
-        commandline -f backward-char
+    if test "$argv[2]" = "--clip"
+        commandline -C (math $end - 1)
+    else
+        for i in (seq 0 (string length $fish_killring[1]))
+            commandline -f backward-char
+        end
     end
     commandline -f begin-selection
     for i in (seq $start (math $end - 2))
