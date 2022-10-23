@@ -1,2 +1,2 @@
-set _input "hello!!! world!!!" Normal ghW
-set _selection "hello!!! "
+_input "hello!!! world!!!" Normal ghW
+_selection "hello!!! "

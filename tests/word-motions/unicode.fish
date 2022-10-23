@@ -1,4 +1,4 @@
 # Key input:
-set _input "áú;;;" Normal b
+_input "áú;;;" Normal b
 # Expected state:
-set _cursor 2
+_cursor 2

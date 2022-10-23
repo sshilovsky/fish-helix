@@ -1,2 +1,2 @@
-set _input hello Normal gg ww
-set _selection "hello"
+_input hello Normal gg ww
+_selection "hello"

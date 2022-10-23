@@ -1,2 +1,2 @@
-set _input "w asdf" Normal ggW
-set _selection "w "
+_input "w asdf" Normal ggW
+_selection "w "

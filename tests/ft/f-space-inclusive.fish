@@ -1,5 +1,4 @@
 # Key input:
-set _input abacaba Normal Fb
-set _broken
+_input abacaba Normal Fb
 # Expected state:
-set _selection "ba "
+_selection --broken "ba "

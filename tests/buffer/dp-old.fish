@@ -1,2 +1,2 @@
-set _input asdfg Normal 3hvld glp
-set _buffer asgdf
+_input asdfg Normal 3hvld glp
+_buffer asgdf

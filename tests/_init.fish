@@ -3,62 +3,105 @@
 # TODO error handling
 
 set temp_dir "$argv[1]"
-if test (count $_broken) = 0 -o -n "$_broken"
-    touch "$temp_dir/broken"
-end
-set result success
 set tmux tmux -f /dev/null
 
-function validate_val -a caption value expected
-    if test (count $expected) -gt 0 -a _"$value" != _"$expected"
+function validate
+    touch "$temp_dir/result/result"
+    exit
+end
+
+set check_index 0
+
+function check
+    set check_index (math $check_index + 1)
+    set property "$q_property[$check_index]"
+    set broken $q_broken[$check_index]
+    set expected "$q_expected[$check_index]"
+    test -n "$broken" && touch "$temp_dir/broken"
+    switch $property
+    case mode
+        set caption "Bind mode:        "
+        set value "$fish_bind_mode"
+    case line
+        set caption "Cursor line:      "
+        set value "$(commandline --line)"
+    case cursor
+        set caption "Cursor position:  "
+        set value "$(commandline --cursor)"
+    case buffer
+        set caption "Buffer content:   "
+        commandline | sed -z 's/\\n$//' | read -lz buffer
+        set value "$buffer"
+    case selection
+        set caption "Selection content:"
+        commandline --current-selection | sed -z 's/\\n$//' | read -lz selection
+        set value "$selection"
+    end
+    if test _"$value" != _"$expected"
         echo "$caption $(string escape -- "$value") ($(string escape -- "$expected") expected)" >> "$temp_dir/out"
-        set result failure
+        test -z $broken && touch "$temp_dir/failure"
+    else if test -n $broken
+        echo "$caption $(string escape -- "$value") (broken value fixed)" >> "$temp_dir/out"
+        touch "$temp_dir/fixed"
     else
         echo "$caption $(string escape -- "$value")" >> "$temp_dir/out"
     end
 end
 
-function validate
-    validate_val "Bind mode:        " "$fish_bind_mode" $_mode
-    validate_val "Cursor line:      " "$(commandline --line)" $_line
-    validate_val "Cursor position:  " "$(commandline --cursor)" $_cursor
-    commandline | sed -z 's/\\n$//' | read -lz buffer
-    validate_val "Buffer content:   " "$buffer" $_buffer
-    commandline --current-selection | sed -z 's/\\n$//' | read -lz selection
-    validate_val "Selection content:" "$selection" $_selection
+set q_property
+set q_broken
+set q_expected
 
-    echo $result >> "$temp_dir/result/result"
-    exit
+function push_check -a property
+    set expected $argv[2..-1]
+    set broken ""
+    if test _"$expected[1]" = _--broken
+        set broken yes
+        set expected $expected[2..-1]
+    end
+    set -a q_property "$property"
+    set -a q_broken "$broken"
+    set -a q_expected "$expected"
+    $tmux send-keys F9
 end
 
-function debug
-    validate_val "Bind mode:        " "$fish_bind_mode"
-    validate_val "Cursor line:      " "$(commandline --line)"
-    validate_val "Cursor position:  " "$(commandline --cursor)"
-    commandline | sed -z 's/\\n$//' | read -lz buffer
-    validate_val "Buffer content:   " "$buffer"
-    commandline --current-selection | sed -z 's/\\n$//' | read -lz selection
-    validate_val "Selection content:" "$selection"
+function _mode
+    push_check mode $argv
+end
+
+function _line
+    push_check line $argv
+end
+
+function _cursor
+    push_check cursor $argv
+end
+
+function _buffer
+    push_check buffer $argv
+end
+
+function _selection
+    push_check selection $argv
+end
+
+function _input
+    for sequence in $argv
+        switch "$sequence"
+        case "Normal"
+            $tmux send-keys F11
+        case "Line"
+            $tmux send-keys F11 o
+        case '*'
+            $tmux send-keys -- "$sequence"
+        end
+    end
 end
 
 set -g fish_key_bindings fish_helix_key_bindings
 bind --user --erase --all
 for mode in default visual insert
     bind --user -M $mode -k f12 validate
-    bind --user -M $mode -k f10 debug
+    bind --user -M $mode -k f9 check
 end
 bind --user -M insert -m default -k f11 ''
-
-for sequence in $_input
-    switch "$sequence"
-    case "Normal"
-        $tmux send-keys F11
-    case "Line"
-        $tmux send-keys F11 o
-    case "Debug"
-        $tmux send-keys F10
-    case '*'
-        $tmux send-keys -- "$sequence"
-    end
-end
-$tmux send-keys F12

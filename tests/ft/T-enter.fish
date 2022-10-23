@@ -1,2 +1,2 @@
-set _input asdfg Line qwe Normal T\r
-set _selection qwe
+_input asdfg Line qwe Normal T\r
+_selection qwe

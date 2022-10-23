@@ -1,2 +1,2 @@
-set _input "asdf" Normal ggAq
-set _buffer "asdfq"
+_input "asdf" Normal ggAq
+_buffer "asdfq"

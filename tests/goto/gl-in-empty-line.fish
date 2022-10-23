@@ -1,6 +1,6 @@
 # Example test
 # Key input:
-set _input hello Line Line Normal kgl
+_input hello Line Line Normal kgl
 # Expected state:
-set _line 2
-set _cursor 6
+_line 2
+_cursor 6

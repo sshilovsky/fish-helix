@@ -1,3 +1,3 @@
-set _input word Normal bb
-set _selection "word"
-set _cursor 0
+_input word Normal bb
+_selection "word"
+_cursor 0

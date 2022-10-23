@@ -1,2 +1,2 @@
-set _input "  hello" Normal gs
-set _selection "h"
+_input "  hello" Normal gs
+_selection "h"

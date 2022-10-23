@@ -1,2 +1,2 @@
-set _input alpha Line Line beta Normal ggww
-set _selection beta
+_input alpha Line Line beta Normal ggww
+_selection beta

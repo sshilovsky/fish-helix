@@ -1,2 +1,2 @@
-set _input "asdf qwer" Normal ggee
-set _selection " qwer"
+_input "asdf qwer" Normal ggee
+_selection " qwer"

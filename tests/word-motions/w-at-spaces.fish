@@ -1,4 +1,4 @@
 # Key input:
-set _input "  abc de" Normal ghw
+_input "  abc de" Normal ghw
 # Expected state:
-set _selection "  "
+_selection "  "

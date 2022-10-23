@@ -11,13 +11,12 @@ tmux -f /dev/null -S "$temp_dir/tmux" new-session -dPF "#{session_name}" \
         source $root/../fish_helix_command.fish; \
         source $root/../fish_default_mode_prompt.fish; \
         source $root/../fish_helix_key_bindings.fish; \
-        set _broken ''; \
-        source $test_file; \
         source $root/_init.fish $temp_dir; \
+        source $test_file; \
+        source $root/_done.fish; \
     " | read -l tmux_session
 
 inotifywait -t 1 -e close_write "$temp_dir/result" >/dev/null 2>&1
 tmux kill-session -t "$tmux_session" 2>/dev/null
-read -l result < "$temp_dir/result/result"
 
-test "$result" = success
+test ! -e "$temp_dir/fixed" -a ! -e "$temp_dir/failure"

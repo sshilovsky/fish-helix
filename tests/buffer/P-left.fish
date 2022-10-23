@@ -1,4 +1,4 @@
-set _input 123 Normal %c asdfghj Normal Fg Fd P
-set _buffer as123dfghj
-set _cursor 5
-set _selection "dfg"
+_input 123 Normal %c asdfghj Normal Fg Fd P
+_buffer as123dfghj
+_cursor 5
+_selection "dfg"

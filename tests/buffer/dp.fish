@@ -1,3 +1,3 @@
-set _input asdfg Normal "Fd;dp"
-set _buffer asfdg
-set _selection f
+_input asdfg Normal "Fd;dp"
+_buffer asfdg
+_selection f

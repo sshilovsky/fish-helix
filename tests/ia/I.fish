@@ -1,2 +1,2 @@
-set _input "  asdf" Normal Iq
-set _buffer "  qasdf"
+_input "  asdf" Normal Iq
+_buffer "  qasdf"

@@ -1,2 +1,2 @@
-set _input "alpha" Normal ghvw
-set _selection "alpha"
+_input "alpha" Normal ghvw
+_selection "alpha"
