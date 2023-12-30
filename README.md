@@ -5,7 +5,7 @@ helix key bindings for fish
 
 Dependencies: fish >= 3.6², GNU tools¹, perl.
 
-1. Copy `*.fish` files inside `~/.config/fish/functions`.
+1. Copy `functions` directory as `~/.config/fish/functions`.
 2. Run `fish_helix_key_bindings`.
 
 To undo, run `fish_default_key_bindings`.
