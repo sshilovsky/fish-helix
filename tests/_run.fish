@@ -7,10 +7,10 @@ mkdir -p "$temp_dir/result"
 # TODO path to compiled fish executable
 tmux -f /dev/null -S "$temp_dir/tmux" new-session -dPF "#{session_name}" \
     fish --private -i -C "\
-        source $root/../fish_bind_count.fish; \
-        source $root/../fish_helix_command.fish; \
-        source $root/../fish_default_mode_prompt.fish; \
-        source $root/../fish_helix_key_bindings.fish; \
+        source $root/../functions/fish_bind_count.fish; \
+        source $root/../functions/fish_helix_command.fish; \
+        source $root/../functions/fish_default_mode_prompt.fish; \
+        source $root/../functions/fish_helix_key_bindings.fish; \
         source $root/_init.fish $temp_dir; \
         source $test_file; \
         source $root/_done.fish; \
