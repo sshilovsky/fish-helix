@@ -228,10 +228,15 @@ function __fish_helix_find_prev_cr -a mode count skip
 end
 
 function __fish_helix_goto_line_end
-    # check if we are on an empty line first
-    if test -z (commandline)
+    # Get the current command line as a single string
+    set current_cmd (commandline)
+
+    # Trim leading/trailing whitespace and check if it's empty
+    if test -z (string trim -- $current_cmd)
         return
     end
+
+    # Move to the end of the line and backward one character
     commandline -f end-of-line backward-char
 end
 
