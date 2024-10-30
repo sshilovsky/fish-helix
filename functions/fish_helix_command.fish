@@ -235,12 +235,6 @@ function __fish_helix_goto_line_end
     commandline -f end-of-line backward-char
 end
 
-#function __fish_helix_goto_first_nonwhitespace
-#    # check if we are on whitespace line first
-#    commandline | sed -n (commandline -L)'!b;/^\\s*$/q;q5' && return
-#    commandline -f beginning-of-line forward-bigword backward-bigword
-#end
-
 function __fish_helix_goto_first_nonwhitespace
     # Check if we are on a line that contains only whitespace
     if test -z (commandline | string trim)
