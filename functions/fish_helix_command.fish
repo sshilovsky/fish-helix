@@ -229,7 +229,9 @@ end
 
 function __fish_helix_goto_line_end
     # check if we are on an empty line first
-    commandline | sed -n (commandline -L)'!b;/^$/q;q5' && return
+    if test -z (commandline)
+        return
+    end
     commandline -f end-of-line backward-char
 end
 
