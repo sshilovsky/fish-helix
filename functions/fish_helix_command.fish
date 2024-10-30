@@ -241,12 +241,19 @@ function __fish_helix_goto_line_end
 end
 
 function __fish_helix_goto_first_nonwhitespace
-    # Check if we are on a line that contains only whitespace
-    if test -z (commandline | string trim)
+    # Store the current command line content in a variable
+    set current_cmd (commandline)
+
+    # Check if the trimmed command line is empty
+    if test -z (string trim -- "$current_cmd")
         return
     end
+
+    # Move to the beginning of the line
     commandline -f beginning-of-line
-    while commandline | string match -qr '^\s'
+
+    # Move forward to the first non-whitespace character
+    while string match -qr '^\s' (commandline -c)
         commandline -f forward-char
     end
 end
