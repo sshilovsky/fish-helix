@@ -3,6 +3,8 @@ set -l test_file "$argv[1]"
 set -l temp_dir "$argv[2]"
 set -l root "$(dirname "$(status filename)")"
 
+echo "$test_file"
+
 mkdir -p "$temp_dir/result"
 # TODO path to compiled fish executable
 tmux -f /dev/null -S "$temp_dir/tmux" new-session -dPF "#{session_name}" \

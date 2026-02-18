@@ -40,7 +40,7 @@ for dir in $argv
                 echo "Test $test_file is fixed." >&2
                 set fixed (math $fixed + 1)
             else
-                echo "UNREACHABLE" >&2
+                echo UNREACHABLE >&2
                 exit 42
             end
         end
