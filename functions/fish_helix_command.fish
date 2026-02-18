@@ -118,12 +118,12 @@ function fish_helix_command
             __fish_helix_extend_by_mode
 
         case insert_mode
-            commandline -C (commandline -B) > /dev/null
+            commandline -C (commandline -B || commandline -C)
             set fish_bind_mode insert
             commandline -f end-selection repaint-mode
 
         case append_mode
-            commandline -C (commandline -E)
+            commandline -C (commandline -E || commandline -C)
             set fish_bind_mode insert
             commandline -f end-selection repaint-mode
 
