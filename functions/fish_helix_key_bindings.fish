@@ -118,16 +118,16 @@ function fish_helix_key_bindings --description 'helix-like key bindings for fish
             # FIXME example to bind 0
             # FIXME backspace to edit count
         end
-        for key in h \e\[D \eOD "left"
+        for key in h \e\[D \eOD left
             bind -s --preset -M $mode $key "fish_helix_command "$ns_move_extend"_char_left"
         end
-        for key in l \e\[C \eOC "right"
+        for key in l \e\[C \eOC right
             bind -s --preset -M $mode $key "fish_helix_command "$ns_move_extend"_char_right"
         end
-        for key in k \e\[A \eOA "up"
+        for key in k \e\[A \eOA up
             bind -s --preset -M $mode $key "fish_helix_command char_up"
         end
-        for key in j \e\[B \eOB "down"
+        for key in j \e\[B \eOB down
             bind -s --preset -M $mode $key "fish_helix_command char_down"
         end
 
@@ -155,10 +155,10 @@ function fish_helix_key_bindings --description 'helix-like key bindings for fish
             bind -s --preset -M $mode "F,$enter" "fish_helix_command find_prev_cr"
         end
 
-        for key in gh \e\[H \eOH "home"
+        for key in gh \e\[H \eOH home
             bind -s --preset -M $mode $key "fish_helix_command goto_line_start"
         end
-        for key in gl \e\[F \eOF "end"
+        for key in gl \e\[F \eOF end
             bind -s --preset -M $mode $key "fish_helix_command goto_line_end"
         end
         bind -s --preset -M $mode gs "fish_helix_command goto_first_nonwhitespace"
