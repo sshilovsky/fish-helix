@@ -146,13 +146,13 @@ function fish_helix_key_bindings --description 'helix-like key bindings for fish
         bind -s --preset -M $mode t\e ""
         bind -s --preset -M $mode f\e ""
         bind -s --preset -M $mode T\e ""
-        bind -s --preset -M $mode F\e ""
+        bind -s --preset -M $mode alt-f ""
 
         for enter in \r \n
-            bind -s --preset -M $mode t$enter "fish_helix_command till_next_cr"
-            bind -s --preset -M $mode f$enter "fish_helix_command find_next_cr"
-            bind -s --preset -M $mode T$enter "fish_helix_command till_prev_cr"
-            bind -s --preset -M $mode F$enter "fish_helix_command find_prev_cr"
+            bind -s --preset -M $mode "t,$enter" "fish_helix_command till_next_cr"
+            bind -s --preset -M $mode "f,$enter" "fish_helix_command find_next_cr"
+            bind -s --preset -M $mode "T,$enter" "fish_helix_command till_prev_cr"
+            bind -s --preset -M $mode "F,$enter" "fish_helix_command find_prev_cr"
         end
 
         for key in gh \e\[H \eOH "home"
