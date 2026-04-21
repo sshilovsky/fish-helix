@@ -101,16 +101,15 @@ function fish_helix_key_bindings --description 'helix-like key bindings for fish
         bind -s --preset -M visual -m default $key repaint-mode
     end
 
-
     # Motion and actions in normal/select mode
     for mode in default visual
         if test $mode = default
-            set -f n_begin_selection "begin-selection" # only begin-selection if current mode is Normal
-            set -f ns_move_extend "move"
+            set -f n_begin_selection begin-selection # only begin-selection if current mode is Normal
+            set -f ns_move_extend move
             set -f commandline_v_repaint ""
         else
             set -f n_begin_selection
-            set -f ns_move_extend "extend"
+            set -f ns_move_extend extend
             set -f commandline_v_repaint "commandline -f repaint-mode"
         end
 
@@ -238,7 +237,6 @@ function fish_helix_key_bindings --description 'helix-like key bindings for fish
     bind -s --preset -M replace_one -m default \r 'commandline -f delete-char; commandline -i \n; commandline -f backward-char; commandline -f repaint-mode'
     bind -s --preset -M replace_one -m default \e cancel repaint-mode
 
-
     ## FIXME Insert mode keys
 
     ## Old config from vi:
@@ -259,35 +257,26 @@ function fish_helix_key_bindings --description 'helix-like key bindings for fish
     bind -s --preset -M insert -k sdc backward-delete-char # shifted delete
     bind -s --preset -M default -k sdc backward-delete-char # shifted delete
 
-
-#    bind -s --preset '~' togglecase-char forward-single-char
-#    bind -s --preset gu downcase-word
-#    bind -s --preset gU upcase-word
-#
-#    bind -s --preset J end-of-line delete-char
-#    bind -s --preset K 'man (commandline -t) 2>/dev/null; or echo -n \a'
-#
-
-
+    #    bind -s --preset '~' togglecase-char forward-single-char
+    #    bind -s --preset gu downcase-word
+    #    bind -s --preset gU upcase-word
+    #
+    #    bind -s --preset J end-of-line delete-char
+    #    bind -s --preset K 'man (commandline -t) 2>/dev/null; or echo -n \a'
+    #
 
     # same vim 'pasting' note as upper
     bind -s --preset '"*p' forward-char "commandline -i ( xsel -p; echo )[1]"
     bind -s --preset '"*P' "commandline -i ( xsel -p; echo )[1]"
 
-
-
     #
     # visual mode
     #
-
-
 
     # bind -s --preset -M visual -m insert c kill-selection end-selection repaint-mode
     # bind -s --preset -M visual -m insert s kill-selection end-selection repaint-mode
     bind -s --preset -M visual -m default '"*y' "fish_clipboard_copy; commandline -f end-selection repaint-mode"
     bind -s --preset -M visual -m default '~' togglecase-selection end-selection repaint-mode
-
-
 
     # Set the cursor shape
     # After executing once, this will have defined functions listening for the variable.
