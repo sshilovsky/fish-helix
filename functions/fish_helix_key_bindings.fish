@@ -197,7 +197,7 @@ function fish_helix_key_bindings --description 'helix-like key bindings for fish
         bind -s --preset -M $mode " R" "fish_helix_command replace_selection_clip"
 
         # FIXME keep selection
-        bind -s --preset -M $mode ~ togglecase-selection
+        bind -s --preset -M $mode '~' togglecase-selection
         # FIXME ` and \e`
 
         # FIXME .
