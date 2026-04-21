@@ -74,7 +74,7 @@ function fish_helix_key_bindings --description 'helix-like key bindings for fish
     # Closing a command substitution expands abbreviations
     bind -s --preset -M insert ")" self-insert expand-abbr
     # Ctrl-space inserts space without expanding abbrs
-    bind -s --preset -M insert -k nul 'commandline -i " "'
+    bind -s --preset -M insert ctrl-space 'commandline -i " "'
 
     # Switching to insert mode
     for mode in default visual
@@ -118,16 +118,16 @@ function fish_helix_key_bindings --description 'helix-like key bindings for fish
             # FIXME example to bind 0
             # FIXME backspace to edit count
         end
-        for key in h \e\[D \eOD "-k left"
+        for key in h \e\[D \eOD "left"
             bind -s --preset -M $mode $key "fish_helix_command "$ns_move_extend"_char_left"
         end
-        for key in l \e\[C \eOC "-k right"
+        for key in l \e\[C \eOC "right"
             bind -s --preset -M $mode $key "fish_helix_command "$ns_move_extend"_char_right"
         end
-        for key in k \e\[A \eOA "-k up"
+        for key in k \e\[A \eOA "up"
             bind -s --preset -M $mode $key "fish_helix_command char_up"
         end
-        for key in j \e\[B \eOB "-k down"
+        for key in j \e\[B \eOB "down"
             bind -s --preset -M $mode $key "fish_helix_command char_down"
         end
 
@@ -155,10 +155,10 @@ function fish_helix_key_bindings --description 'helix-like key bindings for fish
             bind -s --preset -M $mode F$enter "fish_helix_command find_prev_cr"
         end
 
-        for key in gh \e\[H \eOH "-k home"
+        for key in gh \e\[H \eOH "home"
             bind -s --preset -M $mode $key "fish_helix_command goto_line_start"
         end
-        for key in gl \e\[F \eOF "-k end"
+        for key in gl \e\[F \eOF "end"
             bind -s --preset -M $mode $key "fish_helix_command goto_line_end"
         end
         bind -s --preset -M $mode gs "fish_helix_command goto_first_nonwhitespace"
@@ -244,18 +244,18 @@ function fish_helix_key_bindings --description 'helix-like key bindings for fish
     # Vi moves the cursor back if, after deleting, it is at EOL.
     # To emulate that, move forward, then backward, which will be a NOP
     # if there is something to move forward to.
-    bind -s --preset -M insert -k dc delete-char forward-single-char backward-char
-    bind -s --preset -M default -k dc delete-char forward-single-char backward-char
+    bind -s --preset -M insert delete delete-char forward-single-char backward-char
+    bind -s --preset -M default delete delete-char forward-single-char backward-char
 
     # Backspace deletes a char in insert mode, but not in normal/default mode.
-    bind -s --preset -M insert -k backspace backward-delete-char
-    bind -s --preset -M default -k backspace backward-char
+    bind -s --preset -M insert backspace backward-delete-char
+    bind -s --preset -M default backspace backward-char
     bind -s --preset -M insert \ch backward-delete-char
     bind -s --preset -M default \ch backward-char
     bind -s --preset -M insert \x7f backward-delete-char
     bind -s --preset -M default \x7f backward-char
-    bind -s --preset -M insert -k sdc backward-delete-char # shifted delete
-    bind -s --preset -M default -k sdc backward-delete-char # shifted delete
+    bind -s --preset -M insert shift-delete backward-delete-char # shifted delete
+    bind -s --preset -M default shift-delete backward-delete-char # shifted delete
 
     #    bind -s --preset '~' togglecase-char forward-single-char
     #    bind -s --preset gu downcase-word
