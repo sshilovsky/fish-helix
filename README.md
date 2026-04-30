@@ -3,7 +3,7 @@ helix key bindings for fish
 
 # Installation
 
-Dependencies: fish >= 3.6², GNU tools¹, perl.
+Dependencies: fish >= 4², GNU tools¹, perl.
 
 1. Copy `functions` directory as `~/.config/fish/functions`.
 2. Run `fish_helix_key_bindings`.
@@ -12,8 +12,7 @@ To undo, run `fish_default_key_bindings`.
 
 ¹ Should work with POSIX, but untested. Report any issues.
 
-² fish >= 3.4 is sort of good enough. Clone fish-helix
-[fish3.4](https://github.com/sshilovsky/fish-helix/tree/fish3.4) branch.
+² There are branches for fish 3.4 and fish 3.6 as well.
 
 # Tests
 
