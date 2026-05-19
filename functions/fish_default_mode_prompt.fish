@@ -20,7 +20,7 @@ function fish_default_mode_prompt --description "Display vi/helix prompt mode"
                 set_color --bold magenta
                 echo '[V]'
         end
-        set_color normal
+        set_color --reset
         echo -n ' '
     end
 end
