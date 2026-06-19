@@ -361,7 +361,7 @@ end
 function __fish_helix_paste_before -a cmd_paste
     set -l cmd_paste $(string split " " $cmd_paste)
     set -l cursor (commandline -C)
-    set -l start (commandline -B)
+    set -l start (commandline -B || commandline -C)
     set -l end (commandline -E)
     commandline -C $start
     $cmd_paste
@@ -377,13 +377,13 @@ end
 function __fish_helix_paste_after -a cmd_paste
     set -l cmd_paste $(string split " " $cmd_paste)
     set -l cursor (commandline -C)
-    set -l start (commandline -B)
-    set -l end (commandline -E)
+    set -l start (commandline -B || commandline -C)
+    set -l end (commandline -E || commandline -C)
     commandline -C $end
     $cmd_paste
 
     if test "$argv[2]" = --clip
-        commandline -C (math $end - 1)
+        commandline -C (math max (math $end - 1) , 0)
     else
         for i in (seq 0 (string length "$fish_killring[1]"))
             commandline -f backward-char
